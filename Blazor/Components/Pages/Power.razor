@@ -1,0 +1,16 @@
+﻿@page "/Power"
+@rendermode InteractiveServer
+
+<h3>Power</h3>
+<div class="power">
+    <div class="number-input">
+        <h4><pre>Number : </pre></h4>
+        <input type="number" @bind="number" @bind:after="Calculate" />
+    </div>
+    <div class="number-input">
+        <h4><pre>Pow    : </pre></h4>
+        <input type="number" @bind="pow" @bind:after="Calculate" />
+    </div>
+</div>
+<h3>Result : @output</h3>
+

@@ -1,0 +1,25 @@
+﻿.power
+{
+    padding: 5px;
+}
+.number-input {
+    display: flex;
+    align-items: center;
+    box-shadow: 0px 0px 32px 0px lightgray;
+    margin: 5px;
+    font-size: 20px;
+}
+    .number-input > input[type=number]
+    {
+        width : 120px;
+    }
+    .number-input > h4 > pre 
+    {
+        margin:auto 0px;
+        font-size: 25px;
+    }
+.power > .number-input:hover
+{
+    box-shadow:0px 0px 28px 0px darkgray;
+}
+

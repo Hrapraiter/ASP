@@ -1,0 +1,12 @@
+﻿@page "/Fibonatchi"
+@rendermode InteractiveServer
+
+<h3>Fibonatchi</h3>
+
+<div class="fibonatchi">
+    <h4><pre>Колличество чисел : </pre></h4>
+    <input type="number" min="0" @bind="n" @bind:after="Calculate" />
+</div>
+
+<h3>Result : <br> <pre>@output</pre></h3>
+
