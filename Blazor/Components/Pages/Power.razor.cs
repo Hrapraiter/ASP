@@ -13,20 +13,15 @@ namespace Blazor.Components.Pages
         void Calculate()
         {
             output = "";
-            bool isPositive = pow >= 0 ? true : false;
-            if (!isPositive)
+            if (pow < 0)
             {
                 negativeResult = number;
-                for (int i = 0; i >= pow; i--) 
-                {
+                for (int i = 0; i >= pow; i--)
                     negativeResult /= number;
-                }
-                output =    negativeResult.ToString("F99").TrimEnd('0').TrimEnd('.');
+
+                output = negativeResult.ToString("F99").TrimEnd('0').TrimEnd('.');
             }
-            else 
-            {
-                output = BigInteger.Pow(number, pow).ToString();
-            }
+            else output = BigInteger.Pow(number, pow).ToString();
         }
     }
 }

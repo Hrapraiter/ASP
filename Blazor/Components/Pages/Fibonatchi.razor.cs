@@ -29,9 +29,8 @@
             //int numbersCount = Math.Min(n, cashNumbers.Count);// страховка
             int spaceCount = getIntLenght(n);
             for(int i = 0; i < n; i++)
-            {
                 output += $"{new string(' ' , spaceCount - getIntLenght(i+1))}{i+1}. {cashNumbers[i]}\n";
-            }
+            
             
         }
     }
