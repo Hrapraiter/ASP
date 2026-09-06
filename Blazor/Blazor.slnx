@@ -1,3 +1,10 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="../Converter/Converter.vcxproj" Id="6fb036d9-19c0-4109-a939-339284c435eb" />
+  <Project Path="../TODOlist/TODOlist.csproj" Id="a6593d0b-ae5b-4206-bcf2-0286ac98bfe6" />
   <Project Path="Blazor.csproj" />
 </Solution>
