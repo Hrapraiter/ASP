@@ -4,15 +4,15 @@
 <h1>TaskList</h1>
 <div class="statistics">
     <h5>Всего : @tasklist.Count</h5>
-    <h5>Осталось : @tasklist.Where(t => t.DONE == false).ToList().Count</h5>
     <h5>Выполненно : @tasklist.Where(t => t.DONE == true).ToList().Count</h5>
+    <h5>Осталось : @tasklist.Where(t => t.DONE == false).ToList().Count</h5>
 </div>
 
 <input type="text" @bind="description" />
 <button @onclick="AddTask">Добавить</button>
 
 <ul>
-    @foreach (TODO task in tasklist)
+    @foreach(TODO task in tasklist)
     {
         <li>
             <input type="checkbox" @bind="@task.DONE" id="@task.Description" />
