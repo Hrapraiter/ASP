@@ -185,7 +185,6 @@ std::string Hex2Bin_inline(const std::string& hex)
 
 int main()
 {
-    
     int64_t test_value = 255;
     std::cout <<"Dec2Hex : " << Dec2Hex(test_value) << '\n';
     std::cout <<"Dec2Bin : " << Dec2Bin(test_value) << '\n';
@@ -195,5 +194,8 @@ int main()
     std::cout <<"Hex2Bin : " << Hex2Bin(Dec2Hex(test_value)) << "\n\n";
     std::cout <<"Bin2Hex_inline : " << Bin2Hex_inline(Dec2Bin(test_value)) << '\n';
     std::cout <<"Hex2Bin_inline : " << Hex2Bin_inline(Dec2Hex(test_value)) << '\n';
+
+    system("pause");
+    return 0;
 }
 
