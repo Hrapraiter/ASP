@@ -1,6 +1,25 @@
 #include <iostream>
 #include <string>
+#include "../Converter_lib/Converter_lib.h"
+#pragma comment(lib , "../Blazor/x64/Debug/Converter_lib.lib")
+//#include "../Converter_lib/Converter_lib.h"
+//#pragma comment(lib ,  "../Blazor/x64/Debug/Converter_lib.lib")
 
+int main()
+{
+    int64_t test_value = 255;
+    std::cout <<"Dec2Hex : " << convert::Dec2Hex(test_value) << '\n';
+    std::cout <<"Dec2Bin : " << convert::Dec2Bin(test_value) << '\n';
+    std::cout <<"Bin2Dec : " << convert::Bin2Dec(convert::Dec2Bin(test_value)) << '\n';
+    std::cout <<"Hex2Dec : " << convert::Hex2Dec(convert::Dec2Hex(test_value)) << '\n';
+    std::cout <<"Bin2Hex : " << convert::Bin2Hex(convert::Dec2Bin(test_value)) << '\n';
+    std::cout <<"Hex2Bin : " << convert::Hex2Bin(convert::Dec2Hex(test_value)) << "\n\n";
+
+    system("pause");
+    return 0;
+}
+
+/*
 std::string Dec2Bin(const int64_t& number)
 {
     std::string output = "";
@@ -15,20 +34,20 @@ std::string Dec2Bin(const int64_t& number)
 }
 std::string Dec2Hex(const int64_t& number)
 {
-	static char(*Dec2Hex_Elem)(const uint8_t&) = [](const uint8_t& number)
-		{
-			if (number < 10)return char('0' + number);
-			switch (number)
-			{
-			case 10: return 'A';
-			case 11: return 'B';
-			case 12: return 'C';
-			case 13: return 'D';
-			case 14: return 'E';
-			case 15: return 'F';
-			}
-			return char(0);
-		};
+    static char(*Dec2Hex_Elem)(const uint8_t&) = [](const uint8_t& number)
+        {
+            if (number < 10)return char('0' + number);
+            switch (number)
+            {
+            case 10: return 'A';
+            case 11: return 'B';
+            case 12: return 'C';
+            case 13: return 'D';
+            case 14: return 'E';
+            case 15: return 'F';
+            }
+            return char(0);
+        };
     std::string output = "";
     uint64_t num = static_cast<uint64_t>(number);
     while(num > 0)
@@ -53,7 +72,7 @@ int64_t Bin2Dec(const std::string& binary)
     for(int i = binary_copy.length()-1;i >= 0;i--)
         if (binary_copy[i] == '1')
             tmp |= (1ULL << (binary_copy.length() - i - 1));
-    
+
     return static_cast<int64_t>(tmp);
 }
 int64_t Hex2Dec(const std::string& hex)
@@ -74,7 +93,7 @@ int64_t Hex2Dec(const std::string& hex)
         };
     if (hex.empty())return 0;
 
-	std::string hex_copy = hex;
+    std::string hex_copy = hex;
 
     int index = 0;
     if ((index = hex_copy.find("0x")) != std::string::npos)
@@ -111,7 +130,7 @@ std::string Bin2Hex(const std::string& binary)
             if (elem == "1101")return 'D';
             if (elem == "1110")return 'E';
             if (elem == "1111")return 'F';
-            
+
             return char(0);
         };
     if (binary.empty()) return "";
@@ -119,7 +138,7 @@ std::string Bin2Hex(const std::string& binary)
     int index = 0;
     if ((index = binary_copy.find("0b")) != std::string::npos)
         binary_copy.erase(index, 2);
-    
+
     std::string output = "";
     int remaind = binary_copy.length() % 4;
     if (remaind != 0)binary_copy = std::string(remaind, '0') + binary_copy;
@@ -128,40 +147,40 @@ std::string Bin2Hex(const std::string& binary)
         output += Bin2Hex_Elem(binary_copy.substr(i, 4));
 
     if (output.length() < 16) output = std::string(16 - output.length(), '0') + output;
-    
-	return "0x" + output;
+
+    return "0x" + output;
 }
 inline std::string Bin2Hex_inline(const std::string& binary)
 {
-	return Dec2Hex(Bin2Dec(binary));
+    return Dec2Hex(Bin2Dec(binary));
 }
 
 std::string Hex2Bin(const std::string& hex)
 {
-	static std::string(*Hex2Bin_Elem)(char) = [](char elem)
-		{
-			elem = toupper(elem);
-			switch (elem)
-			{
+    static std::string(*Hex2Bin_Elem)(char) = [](char elem)
+        {
+            elem = toupper(elem);
+            switch (elem)
+            {
             case '0': return std::string("0000");
-			case '1': return std::string("0001");
-			case '2': return std::string("0010");
-			case '3': return std::string("0011");
-			case '4': return std::string("0100");
-			case '5': return std::string("0101");
-			case '6': return std::string("0110");
-			case '7': return std::string("0111");
-			case '8': return std::string("1000");
-			case '9': return std::string("1001");
-			case 'A': return std::string("1010");
-			case 'B': return std::string("1011");
-			case 'C': return std::string("1100");
-			case 'D': return std::string("1101");
-			case 'E': return std::string("1110");
-			case 'F': return std::string("1111");
-			}
-			return std::string("");
-		};
+            case '1': return std::string("0001");
+            case '2': return std::string("0010");
+            case '3': return std::string("0011");
+            case '4': return std::string("0100");
+            case '5': return std::string("0101");
+            case '6': return std::string("0110");
+            case '7': return std::string("0111");
+            case '8': return std::string("1000");
+            case '9': return std::string("1001");
+            case 'A': return std::string("1010");
+            case 'B': return std::string("1011");
+            case 'C': return std::string("1100");
+            case 'D': return std::string("1101");
+            case 'E': return std::string("1110");
+            case 'F': return std::string("1111");
+            }
+            return std::string("");
+        };
     if (hex.empty())return "";
 
     std::string hex_copy = hex;
@@ -171,31 +190,15 @@ std::string Hex2Bin(const std::string& hex)
         hex_copy.erase(index, 2);
 
     std::string output = "";
-	for (int i = 0; i < hex_copy.length(); i++)
-		output += Hex2Bin_Elem(hex_copy[i]);
+    for (int i = 0; i < hex_copy.length(); i++)
+        output += Hex2Bin_Elem(hex_copy[i]);
 
     if (output.length() < 64) output = std::string(64 - output.length(), '0') + output;
     return "0b" + output;
     return Dec2Bin(Hex2Dec(hex));
 }
-std::string Hex2Bin_inline(const std::string& hex)
+inline std::string Hex2Bin_inline(const std::string& hex)
 {
-	return Dec2Bin(Hex2Dec(hex));
+    return Dec2Bin(Hex2Dec(hex));
 }
-
-int main()
-{
-    int64_t test_value = 255;
-    std::cout <<"Dec2Hex : " << Dec2Hex(test_value) << '\n';
-    std::cout <<"Dec2Bin : " << Dec2Bin(test_value) << '\n';
-    std::cout <<"Bin2Dec : " << Bin2Dec(Dec2Bin(test_value)) << '\n';
-    std::cout <<"Hex2Dec : " << Hex2Dec(Dec2Hex(test_value)) << '\n';
-    std::cout <<"Bin2Hex : " << Bin2Hex(Dec2Bin(test_value)) << '\n';
-    std::cout <<"Hex2Bin : " << Hex2Bin(Dec2Hex(test_value)) << "\n\n";
-    std::cout <<"Bin2Hex_inline : " << Bin2Hex_inline(Dec2Bin(test_value)) << '\n';
-    std::cout <<"Hex2Bin_inline : " << Hex2Bin_inline(Dec2Hex(test_value)) << '\n';
-
-    system("pause");
-    return 0;
-}
-
+*/

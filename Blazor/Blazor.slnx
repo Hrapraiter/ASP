@@ -5,7 +5,9 @@
     <Platform Name="x86" />
   </Configurations>
   <Project Path="../Converter/Converter.vcxproj" Id="6fb036d9-19c0-4109-a939-339284c435eb" />
-  <Project Path="../Movies/Movies.csproj" Id="d406ddca-0a7f-49ca-a994-dda8590a8fe2" />
-  <Project Path="../TODOlist/TODOlist.csproj" Id="a6593d0b-ae5b-4206-bcf2-0286ac98bfe6" />
+  <Project Path="../Converter_lib/Converter_lib.vcxproj" Id="8856c63e-052d-45cc-b74a-d8bdb4b0a3ef" />
+  <Project Path="../Movies/Movies.csproj" />
+  <Project Path="../TODOlist/TODOlist.csproj" />
   <Project Path="Blazor.csproj" />
+  <Project Path="ConverterCSharp/ConverterCSharp.vcxproj" />
 </Solution>

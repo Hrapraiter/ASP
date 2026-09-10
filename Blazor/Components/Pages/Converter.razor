@@ -1,0 +1,41 @@
+﻿@page "/Converter"
+@rendermode InteractiveServer
+
+<h2>Converter</h2>
+
+<div>
+    <label>Dec2Bin</label>
+    <input type="number" @bind="@D2B_input"/>
+    <button @onclick="D2B_Calc">button</button>
+    <label>@D2B_result</label>
+</div>
+<div>
+    <label>Dec2Hex</label>
+    <input type="number" @bind="@D2H_input"/>
+    <button @onclick="D2H_Calc">button</button>
+    <label>@D2H_result</label>
+</div>
+<div>
+    <label>Bin2Dec</label>
+    <input type="text" @bind="@B2D_input"/>
+    <button @onclick="B2D_Calc">button</button>
+    <label>@B2D_result</label>
+</div>
+<div>
+    <label>Hex2Dec</label>
+    <input type="text" @bind="@H2D_input"/>
+    <button @onclick="H2D_Calc">button</button>
+    <label>@H2D_result</label>
+</div>
+<div>
+    <label>Bin2Hex</label>
+    <input type="text" @bind="@B2H_input"/>
+    <button @onclick="B2H_Calc">button</button>
+    <label>@B2H_result</label>
+</div>
+<div>
+    <label>Hex2Bin</label>
+    <input type="text" @bind="@H2B_input"/>
+    <button @onclick="H2B_Calc">button</button>
+    <label>@H2B_result</label>
+</div>
