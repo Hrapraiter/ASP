@@ -26,6 +26,7 @@ Console.WriteLine((string)Bin2Hex.Invoke(instance , new object[] { Dec2Bin.Invok
 Console.WriteLine((string)Hex2Bin.Invoke(instance , new object[] { Dec2Hex.Invoke(instance , new object[] { testValue })}));
 
  */
+
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
