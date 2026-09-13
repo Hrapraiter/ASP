@@ -33,7 +33,7 @@
     private MoviesContext context = default!;
 
     PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
-
+    
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
