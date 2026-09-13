@@ -13,18 +13,23 @@
 
 <p>
     <a href="movies/create">Create New</a>
+    <br />
+    <label>Колличетсво записей : @totalItems</label>
+    <br />
+    <label>Записей на странице :</label>
+    <input type="number" min="1" max="@int.MaxValue " @bind-value="itemsPerPage" @bind-value:after="UpdateItemsPerPageFromPagination" />
 </p>
 
-<QuickGrid Class="table" Items="context.Movie" Pagination="pagination">
+<QuickGrid Class="table" ItemsProvider="GetMovies" TGridItem="Movie" Pagination="pagination">
     @* <PropertyColumn Property="movie => movie.Title" /> *@
     <TemplateColumn Context="movie" Title="Название фильма">
         <a href="@($"movies/details?id={movie.Id}")">@movie.Title</a>
     </TemplateColumn>
-    <PropertyColumn Property="movie => movie.ReleaseDate" Title="Дата выхода"/>
-    <PropertyColumn Property="movie => movie.Genre" Title="Жанр"/>
+    <PropertyColumn Property="movie => movie.ReleaseDate" Title="Дата выхода" />
+    <PropertyColumn Property="movie => movie.Genre" Title="Жанр" />
 
-   @*<TemplateColumn Context="movie">
-        <a href="@($"movies/details?id={movie.Id}")">Details</a> 
+    @*<TemplateColumn Context="movie">
+        <a href="@($"movies/details?id={movie.Id}")">Details</a>
     </TemplateColumn> *@
 </QuickGrid>
 <Paginator State="pagination" />
@@ -32,8 +37,31 @@
 @code {
     private MoviesContext context = default!;
 
+    int totalItems = 0;
+    int itemsPerPage = 3;
+
     PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
-    
+
+    void UpdateItemsPerPageFromPagination()
+    {
+        pagination.ItemsPerPage = itemsPerPage = itemsPerPage > totalItems ? totalItems : itemsPerPage;
+    }
+    async ValueTask<GridItemsProviderResult<Movie>> GetMovies(GridItemsProviderRequest<Movie> request)
+    {
+        MoviesContext context = DbFactory.CreateDbContext();
+        totalItems = await context.Movie.CountAsync(request.CancellationToken);
+
+        IQueryable<Movie> query = context.Movie.OrderBy(x => x.Id);
+        query = request.ApplySorting(query).Skip(request.StartIndex).Take(pagination.ItemsPerPage);
+
+        ICollection<Movie> items = await query.ToArrayAsync(request.CancellationToken);
+        context.Dispose();
+        return new GridItemsProviderResult<Movie>
+        {
+            Items = items,
+            TotalItemCount = totalItems
+        };
+    }
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
