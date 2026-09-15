@@ -54,6 +54,7 @@
         IQueryable<Movie> query = context.Movie.OrderBy(x => x.Id);
         query = request.ApplySorting(query).Skip(request.StartIndex).Take(pagination.ItemsPerPage);
 
+        //ICollection<Movie> items = query.ToArray();
         ICollection<Movie> items = await query.ToArrayAsync(request.CancellationToken);
         context.Dispose();
         return new GridItemsProviderResult<Movie>
