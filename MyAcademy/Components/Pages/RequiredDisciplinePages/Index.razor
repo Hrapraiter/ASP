@@ -1,0 +1,37 @@
+@page "/requireddisciplines"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="requireddisciplines/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.RequiredDisciplines">
+    <PropertyColumn Property="requireddiscipline => requireddiscipline.discipline" />
+    <PropertyColumn Property="requireddiscipline => requireddiscipline.required_discipline" />
+
+    <TemplateColumn Context="requireddiscipline">
+        <a href="@($"requireddisciplines/edit?discipline={requireddiscipline.discipline}&required_discipline={requireddiscipline.required_discipline}")">Edit</a> |
+        <a href="@($"requireddisciplines/details?discipline={requireddiscipline.discipline}&required_discipline={requireddiscipline.required_discipline}")">Details</a> |
+        <a href="@($"requireddisciplines/delete?discipline={requireddiscipline.discipline}&required_discipline={requireddiscipline.required_discipline}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private PV_522_ImportContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

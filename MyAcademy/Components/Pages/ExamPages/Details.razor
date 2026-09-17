@@ -1,0 +1,50 @@
+@page "/exams/details"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Exam</h2>
+    <hr />
+    @if (exam is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">discipline</dt>
+            <dd class="col-sm-10">@exam.discipline</dd>
+            <dt class="col-sm-2">date</dt>
+            <dd class="col-sm-10">@exam.date</dd>
+            <dt class="col-sm-2">grade</dt>
+            <dd class="col-sm-10">@exam.grade</dd>
+        </dl>
+        <div>
+            <a href="@($"/exams/edit?student={exam.student}")">Edit</a> |
+            <a href="@($"/exams")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Exam? exam;
+
+    [SupplyParameterFromQuery]
+    private int student { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        exam = await context.Exams.FirstOrDefaultAsync(m => m.student == student);
+
+        if (exam is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+}

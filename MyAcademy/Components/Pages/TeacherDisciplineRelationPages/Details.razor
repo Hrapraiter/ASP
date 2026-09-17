@@ -1,0 +1,46 @@
+@page "/teacherdisciplinerelations/details"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>TeacherDisciplineRelation</h2>
+    <hr />
+    @if (teacherdisciplinerelation is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">discipline</dt>
+            <dd class="col-sm-10">@teacherdisciplinerelation.discipline</dd>
+        </dl>
+        <div>
+            <a href="@($"/teacherdisciplinerelations/edit?teacher={teacherdisciplinerelation.teacher}")">Edit</a> |
+            <a href="@($"/teacherdisciplinerelations")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private TeacherDisciplineRelation? teacherdisciplinerelation;
+
+    [SupplyParameterFromQuery]
+    private short teacher { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        teacherdisciplinerelation = await context.TeachersDisciplinesRelation.FirstOrDefaultAsync(m => m.teacher == teacher);
+
+        if (teacherdisciplinerelation is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+}

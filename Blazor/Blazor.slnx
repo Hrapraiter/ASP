@@ -7,6 +7,7 @@
   <Project Path="../Converter/Converter.vcxproj" Id="6fb036d9-19c0-4109-a939-339284c435eb" />
   <Project Path="../Converter_lib/Converter_lib.vcxproj" Id="8856c63e-052d-45cc-b74a-d8bdb4b0a3ef" />
   <Project Path="../Movies/Movies.csproj" />
+  <Project Path="../MyAcademy/MyAcademy.csproj" Id="0e9b543f-7230-4564-81bc-67aa731a5857" />
   <Project Path="../TODOlist/TODOlist.csproj" />
   <Project Path="Blazor.csproj" />
   <Project Path="ConverterCSharp/ConverterCSharp.vcxproj" />

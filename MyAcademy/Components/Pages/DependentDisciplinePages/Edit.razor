@@ -1,0 +1,89 @@
+@page "/dependentdisciplines/edit"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>DependentDiscipline</h2>
+<hr />
+@if (DependentDiscipline is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="DependentDiscipline" OnValidSubmit="UpdateDependentDiscipline" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="DependentDiscipline.discipline" value="@DependentDiscipline.discipline" />
+                <div class="mb-3">
+                    <label for="dependent_discipline" class="form-label">dependent_discipline:</label>
+                    <InputNumber id="dependent_discipline" @bind-Value="DependentDiscipline.dependent_discipline" class="form-control" />
+                    <ValidationMessage For="() => DependentDiscipline.dependent_discipline" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/dependentdisciplines">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private short discipline { get; set; }
+
+    [SupplyParameterFromForm]
+    private DependentDiscipline? DependentDiscipline { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        DependentDiscipline ??= await context.DependentDisciplines.FirstOrDefaultAsync(m => m.discipline == discipline);
+
+        if (DependentDiscipline is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateDependentDiscipline()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(DependentDiscipline!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!DependentDisciplineExists(DependentDiscipline!.discipline))
+            {
+                NavigationManager.NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/dependentdisciplines");
+    }
+
+    private bool DependentDisciplineExists(short discipline)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.DependentDisciplines.Any(e => e.discipline == discipline);
+    }
+}

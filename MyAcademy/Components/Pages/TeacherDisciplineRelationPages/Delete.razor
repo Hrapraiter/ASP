@@ -1,0 +1,55 @@
+@page "/teacherdisciplinerelations/delete"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>TeacherDisciplineRelation</h2>
+    <hr />
+    @if (teacherdisciplinerelation is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">discipline</dt>
+            <dd class="col-sm-10">@teacherdisciplinerelation.discipline</dd>
+        </dl>
+        <EditForm method="post" Model="teacherdisciplinerelation" OnValidSubmit="DeleteTeacherDisciplineRelation" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(teacherdisciplinerelation is null)">Delete</button> |
+            <a href="/teacherdisciplinerelations">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private TeacherDisciplineRelation? teacherdisciplinerelation;
+
+    [SupplyParameterFromQuery]
+    private short teacher { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        teacherdisciplinerelation = await context.TeachersDisciplinesRelation.FirstOrDefaultAsync(m => m.teacher == teacher);
+
+        if (teacherdisciplinerelation is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    private async Task DeleteTeacherDisciplineRelation()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.TeachersDisciplinesRelation.Remove(teacherdisciplinerelation!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/teacherdisciplinerelations");
+    }
+}

@@ -1,0 +1,39 @@
+@page "/holidays"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="holidays/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Holidays">
+    <PropertyColumn Property="holiday => holiday.holiday_name" />
+    <PropertyColumn Property="holiday => holiday.mounth" />
+    <PropertyColumn Property="holiday => holiday.day" />
+    <PropertyColumn Property="holiday => holiday.duration" />
+
+    <TemplateColumn Context="holiday">
+        <a href="@($"holidays/edit?holiday_id={holiday.holiday_id}")">Edit</a> |
+        <a href="@($"holidays/details?holiday_id={holiday.holiday_id}")">Details</a> |
+        <a href="@($"holidays/delete?holiday_id={holiday.holiday_id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private PV_522_ImportContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

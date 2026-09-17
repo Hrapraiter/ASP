@@ -1,0 +1,124 @@
+@page "/students/edit"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Student</h2>
+<hr />
+@if (Student is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Student.StudId" value="@Student.stud_id" />
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">LastName:</label>
+                    <InputText id="lastname" @bind-Value="Student.last_name" class="form-control" />
+                    <ValidationMessage For="() => Student.last_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="firstname" class="form-label">FirstName:</label>
+                    <InputText id="firstname" @bind-Value="Student.first_name" class="form-control" />
+                    <ValidationMessage For="() => Student.first_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="middlename" class="form-label">MiddleName:</label>
+                    <InputText id="middlename" @bind-Value="Student.middle_name" class="form-control" />
+                    <ValidationMessage For="() => Student.middle_name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label">BirthDate:</label>
+                    <InputDate id="birthdate" @bind-Value="Student.birth_date" class="form-control" />
+                    <ValidationMessage For="() => Student.birth_date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <InputText id="email" @bind-Value="Student.email" class="form-control" />
+                    <ValidationMessage For="() => Student.email" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone:</label>
+                    <InputText id="phone" @bind-Value="Student.phone" class="form-control" />
+                    <ValidationMessage For="() => Student.phone" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="photo" class="form-label">Photo:</label>
+                    <InputFile id="photo" @bind-Value="Student.photo" class="form-control" />
+                    <ValidationMessage For="() => Student.photo" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="group" class="form-label">Group:</label>
+                    <InputNumber id="group" @bind-Value="Student.group" class="form-control" />
+                    <ValidationMessage For="() => Student.group" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/students">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private uint StudId { get; set; }
+
+    [SupplyParameterFromForm]
+    private Student? Student { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Student ??= await context.Students.FirstOrDefaultAsync(m => m.stud_id == StudId);
+
+        if (Student is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateStudent()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Student!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!StudentExists(Student!.stud_id))
+            {
+                NavigationManager.NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/students");
+    }
+
+    private bool StudentExists(int studid)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Students.Any(e => e.stud_id == studid);
+    }
+}

@@ -1,0 +1,46 @@
+@page "/disciplinedirectionrelations/create"
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>DisciplineDirectionRelation</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="DisciplineDirectionRelation" OnValidSubmit="AddDisciplineDirectionRelation" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="discipline" class="form-label">discipline:</label> 
+                <InputNumber id="discipline" @bind-Value="DisciplineDirectionRelation.discipline" class="form-control" /> 
+                <ValidationMessage For="() => DisciplineDirectionRelation.discipline" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/disciplinedirectionrelations">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private DisciplineDirectionRelation DisciplineDirectionRelation { get; set; } = default!;
+
+    protected override void OnInitialized() => DisciplineDirectionRelation ??= new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddDisciplineDirectionRelation()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.DisciplinesDirectionsRelation.Add(DisciplineDirectionRelation);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/disciplinedirectionrelations");
+    }
+}

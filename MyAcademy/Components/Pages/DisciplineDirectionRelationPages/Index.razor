@@ -1,0 +1,37 @@
+@page "/disciplinedirectionrelations"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using MyAcademy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<PV_522_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="disciplinedirectionrelations/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.DisciplinesDirectionsRelation">
+    <PropertyColumn Property="disciplinedirectionrelation => disciplinedirectionrelation.direction" />
+    <PropertyColumn Property="disciplinedirectionrelation => disciplinedirectionrelation.discipline" />
+
+    <TemplateColumn Context="disciplinedirectionrelation">
+        <a href="@($"disciplinedirectionrelations/edit?direction={disciplinedirectionrelation.direction}&discipline={disciplinedirectionrelation.discipline}")">Edit</a> |
+        <a href="@($"disciplinedirectionrelations/details?direction={disciplinedirectionrelation.direction}&discipline={disciplinedirectionrelation.discipline}")">Details</a> |
+        <a href="@($"disciplinedirectionrelations/delete?direction={disciplinedirectionrelation.direction}&discipline={disciplinedirectionrelation.discipline}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private PV_522_ImportContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
