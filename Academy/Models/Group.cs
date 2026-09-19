@@ -12,7 +12,6 @@ namespace Academy.Models
         public string group_name { get; set; }
         [Required]
         [Column(TypeName = "TINYINT")]
-
         [ForeignKey(nameof(Direction))]
         public int direction { get; set; }
         public DateOnly? start_date { get; set; }
