@@ -1,0 +1,18 @@
+﻿.input 
+{
+    display:flex;
+    justify-content: space-between;
+}
+::deep .direction-id
+{
+    width:10%;
+}
+::deep .direction-name
+{
+    width:70%;
+}
+::deep .grid-container
+{
+    height:58vh;/*vh - Viewport Height (Высота видимой части страницы)*/
+    
+}

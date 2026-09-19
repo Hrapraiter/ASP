@@ -9,11 +9,11 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<h1>Направления обучения.</h1>
 
-<div class="input">
+<div class="controls">
     <p>
-        <a href="directions/create">Create New</a>
+        <a href="directions/create" class="btn btn-primary">Добавить</a>
     </p>
     <form action="/directions">
         <input type="search" name="titleFilter" />
@@ -21,23 +21,28 @@
     </form>
     <div>
         <label for="items-per-page">Элементов на странице:</label>
-        <select @bind="pagination.ItemsPerPage" id="items-per-page">
+        <select @bind="pagination.ItemsPerPage" id="items-per-page" >
             <option value="3">3</option>
             <option value="5">5</option>
+            <option value="8">8</option>
             <option value="10">10</option>
         </select>
     </div>
 </div>
 
-<QuickGrid Class="table" Items="FilteredDirections" Pagination="pagination">
-    <PropertyColumn Property="direction => direction.direction_id" />
-    <PropertyColumn Property="direction => direction.direction_name" />
+<div>
+    <div class="grid-container">
+        <QuickGrid Class="table" Items="FilteredDirections" Pagination="pagination">
+            <PropertyColumn Property="direction => direction.direction_id" class="direction-id" />
+            <PropertyColumn Property="direction => direction.direction_name" Class="direction-name" />
 
-    <TemplateColumn Context="direction">
-        <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a>
-    </TemplateColumn>
-</QuickGrid>
-<Paginator State="pagination"/>
+            <TemplateColumn Context="direction">
+                <a href="@($"directions/details?direction_id={direction.direction_id}")">Details</a>
+            </TemplateColumn>
+        </QuickGrid>
+    </div>
+    <Paginator State="pagination" />
+</div>
 
 @code {
     private AcademyContext context = default!;
