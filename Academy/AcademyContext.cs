@@ -1,3 +1,4 @@
+using Academy.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class AcademyContext(DbContextOptions<AcademyContext> options) : DbContext(options)
@@ -7,5 +8,6 @@ public class AcademyContext(DbContextOptions<AcademyContext> options) : DbContex
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
     }
 }
