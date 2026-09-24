@@ -11,6 +11,6 @@ namespace Academy.Models
         [ForeignKey(nameof(Group))]
         public int group { get; set; }
 
-        public Group Group { get; set; }
+        public Group Group { get; set; } 
     }
 }
