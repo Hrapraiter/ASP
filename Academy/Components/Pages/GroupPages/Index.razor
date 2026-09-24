@@ -9,12 +9,14 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
-
 <div class="controls">
+    <h1>Группы</h1>
+
     <p>
-        <a href="groups/create">Create New</a>
+        <a href="groups/create" class="btn btn-primary">Добавить</a>
     </p>
+</div>
+<div class="controls">
     <form action="/groups">
         <label for="groups-search">Поиск : </label>
         <input id="groups-search" type="search" name="TitleFilter" />
@@ -31,11 +33,12 @@
 </div>
 
 <QuickGrid Class="table" Items="FilteredGroups" Pagination="pagination">
-    <PropertyColumn Property="group => group.group_name" />
-    <PropertyColumn Property="group => group.direction" />
+    <PropertyColumn Property="group => group.group_name"  />
+    <PropertyColumn Property="group => group.direction"  />
     <PropertyColumn Property="group => group.start_date" />
     <PropertyColumn Property="group => group.start_time" />
-    <PropertyColumn Property="group => group.learning_days" />
+    <PropertyColumn Property="group => new Week((int)group.learning_days)" Title="learning_days" />
+    @* <PropertyColumn Property="group => group.learning_days" /> *@
     <PropertyColumn Property="group => group.Direction" />
 
     <TemplateColumn Context="group">
@@ -48,6 +51,7 @@
     [SupplyParameterFromQuery]
     string? TitleFilter { get; set; }
 
+    
     IQueryable<Group> FilteredGroups => context.Groups.Where(g => g.group_name.Contains(TitleFilter ?? string.Empty));
 
     PaginationState pagination = new PaginationState { ItemsPerPage = 3 };

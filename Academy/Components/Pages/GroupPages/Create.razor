@@ -1,4 +1,5 @@
 @page "/groups/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
 @inject IDbContextFactory<AcademyContext> DbFactory
@@ -57,6 +58,7 @@
                 <InputNumber id="direction" @bind-Value="Group.Direction" class="form-control" /> 
                 <ValidationMessage For="() => Group.Direction" class="text-danger" /> 
             </div>   *@      
+            <LearningDays Group="@Group" />
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
