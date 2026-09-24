@@ -50,7 +50,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="start_time" class="form-label">start_time:</label>
-                    <input type="time" id="start_time" @bind="Group.start_time" class="form-control" />
+                    <InputDate Type="InputDateType.Time" id="start_time" @bind-Value="Group.start_time" class="form-control" />
                     <ValidationMessage For="() => Group.start_time" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -64,6 +64,7 @@ else
                     <ValidationMessage For="() => Group.Direction" class="text-danger" />
 
                 </div> *@
+                <LearningDays Group="@Group"/>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
