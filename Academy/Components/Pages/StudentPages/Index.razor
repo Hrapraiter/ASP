@@ -7,13 +7,15 @@
 @inject IDbContextFactory<AcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Студенты</PageTitle>
 
-<h1>Index</h1>
+<div class="controls">
+    <h1>Студенты</h1>
 
-<p>
-    <a href="students/create">Create New</a>
-</p>
+    <p>
+        <a href="students/create" class="btn btn-primary">Добавить</a>
+    </p>
+</div>
 
 <QuickGrid Class="table" Items="context.Students.Include(s => s.Group).ThenInclude(g => g.Direction)">
     @* <PropertyColumn Property="student => student.last_name" />
@@ -27,6 +29,13 @@
     </TemplateColumn>
     @* <PropertyColumn Property="student => student.FullName" Sortable="true" /> *@
     <PropertyColumn Property="student => student.birth_date" />
+    <TemplateColumn Context="student"
+                    Title="Age"
+                    Sortable="true"
+                    SortBy="GridSort<Student>.ByDescending(s => s.birth_date)"
+                    > 
+                    @student.Age
+    </TemplateColumn>
     <PropertyColumn Property="student => student.Group.group_name" Sortable="true" />
     <PropertyColumn Property="student => student.Group.Direction.direction_name" Sortable="true" />
     <PropertyColumn Property="student => student.email" />
