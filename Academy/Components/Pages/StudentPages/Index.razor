@@ -82,7 +82,10 @@
         context = DbFactory.CreateDbContext();
         students = context.Students.Include(s => s.Group).ThenInclude(g => g.Direction);
         StudentsFiltered = students.Where(s => s.last_name.Contains(StudentFilter ?? string.Empty) ||
-                                               s.first_name.Contains(StudentFilter ?? string.Empty));
+                                               s.first_name.Contains(StudentFilter ?? string.Empty) ||
+                                               s.middle_name.Contains(StudentFilter ?? string.Empty) ||
+                                               s.Group.group_name.Contains(StudentFilter ?? string.Empty)
+                                         );
     }
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }
