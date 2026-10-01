@@ -20,7 +20,7 @@
         height:90%;
         border:solid 1px;
     }
-    .photo-area img
+    .photo-area > div > img
     {
         /*object-fit:contain;*/
         object-fit:cover;

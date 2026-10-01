@@ -4,9 +4,10 @@
 
 <h5>Group:</h5>
 <InputSelect @bind-Value="Student.group" class="form-control">
-    <option selected disabled>---Выберите группу---</option>
+    @* <option selected disabled>---Выберите группу---</option> *@
     @using (AcademyContext context = DbFactory.CreateDbContext())
     {
+        
         @foreach (Group group in context.Groups)
         {
             <option value="@group.group_id">@group.group_name</option>
