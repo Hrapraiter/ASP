@@ -11,10 +11,20 @@
         Group? first_group = context.Groups.FirstOrDefault();
         if(first_group != null)
         {
-            <option selected value="@first_group.group_id">@first_group.group_name</option>
-            @foreach (Group group in context.Groups.Where(g => g.group_id != first_group.group_id))
+            if (Student.group == null)
             {
-                <option value="@group.group_id">@group.group_name</option>
+                <option selected value="@first_group.group_id">@first_group.group_name</option>
+                @foreach (Group group in context.Groups.Where(g => g.group_id != first_group.group_id))
+                {
+                    <option value="@group.group_id">@group.group_name</option>
+                }
+            }
+            else
+            {
+                @foreach (Group group in context.Groups)
+                {
+                    <option value="@group.group_id">@group.group_name</option>
+                }
             }
         }
     }
