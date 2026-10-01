@@ -39,7 +39,7 @@ else
                             <InputText id="group" @bind-Value="Student.Group.group_name" class="form-control" />
                             <ValidationMessage For="() => Student.Group" class="text-danger" />
                         </div> *@
-                        <label for="student-group" class="form-label">Group:</label>
+                        @* <label for="student-group" class="form-label">Group:</label>
                         <InputSelect id="student-group" @bind-Value="Student.group" class="form-control">
                             <option selected disabled>---Выберите группу---</option>
                             @using(AcademyContext context = DbFactory.CreateDbContext())
@@ -49,7 +49,9 @@ else
                                     <option value="@group.group_id">@group.group_name</option>   
                                 }
                             }
-                        </InputSelect>
+                        </InputSelect> *@
+                        <CB_Groups Student="Student" />
+
                         <div class="mb-3">
                             <span class="text-danger">*</span>
                             <label for="last_name" class="form-label">last_name:</label>
@@ -112,7 +114,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Student ??= await context.Students.Include(s => s.Group).ThenInclude(g => g.Direction).FirstOrDefaultAsync(m => m.stud_id == stud_id);
+        Student ??= await context.Students.FirstOrDefaultAsync(m => m.stud_id == stud_id);
 
         if (Student is null)
         {

@@ -1,0 +1,22 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@inject IDbContextFactory<AcademyContext> DbFactory
+
+<h5>Group:</h5>
+<InputSelect @bind-Value="Student.group" class="form-control">
+    <option selected disabled>---Выберите группу---</option>
+    @using (AcademyContext context = DbFactory.CreateDbContext())
+    {
+        @foreach (Group group in context.Groups)
+        {
+            <option value="@group.group_id">@group.group_name</option>
+        }
+    }
+</InputSelect>
+<ValidationMessage For="() => Student.group" class="text-danger" />
+@code 
+{
+    [Parameter]
+    public Student Student { get; set; }
+
+}
