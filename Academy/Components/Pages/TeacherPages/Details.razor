@@ -32,7 +32,7 @@
                     <dt class="col-sm-4">birth_date</dt>  <dd class="col-sm-10">@teacher.birth_date</dd>
                     <dt class="col-sm-4">email</dt>       <dd class="col-sm-10">@teacher.email</dd>
                     <dt class="col-sm-4">phone</dt>       <dd class="col-sm-10">@teacher.phone</dd>
-                    <dt class="col-sm-4">photo</dt>       <dd class="col-sm-10">@teacher.photo</dd>
+                    @* <dt class="col-sm-4">photo</dt>       <dd class="col-sm-10">@teacher.photo</dd> *@
                     <dt class="col-sm-ё4">work_since</dt>  <dd class="col-sm-10">@teacher.work_since</dd>
                     <dt class="col-sm-4">rate</dt>        <dd class="col-sm-10">@teacher.rate</dd>
                 </dl>
@@ -42,6 +42,13 @@
             <a href="@($"/teachers/delete?teacher_id={teacher.teacher_id}")" class="btn btn-danger">Delete</a>
             <a href="@($"/teachers")" class="btn btn-dark">Back to List</a>
         </div>
+        <h3>Дисциплины:</h3>
+        <ul>
+            @foreach(TeachersDisciplinesRelation tdr in teacher.TDR)
+            {
+                <li>@tdr.Discipline.discipline_name</li>
+            }
+        </ul>
     }
 </div>
 
@@ -54,7 +61,9 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        teacher = await context.Teachers.FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
+        teacher = await context.Teachers.Include(t => t.TDR)
+                                        .ThenInclude(tdr => tdr.Discipline)
+                                        .FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
 
         if (teacher is null)
         {
