@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
+@rendermode InteractiveServer
 @implements IAsyncDisposable
 @inject IDbContextFactory<AcademyContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -22,6 +23,8 @@
     <PropertyColumn Property="teacher => teacher.middle_name" /> *@
     <TemplateColumn Context="teacher" 
                     Title="FullName"
+                    Sortable="true"
+                    SortBy="sortBy"
                     >
         <a href="@($"/teachers/details?teacher_id={teacher.teacher_id}")">@teacher.FullName</a>
     </TemplateColumn>
@@ -43,8 +46,8 @@
 
 @code {
     private AcademyContext context = default!;
-    //GridSort<Teacher> sortBy = context.Teachers.GroupBy().By;
-
+    GridSort<Teacher> sortBy = GridSort<Teacher>.ByAscending(t => t.last_name)
+                                                .ThenAscending(t => t.first_name); 
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
