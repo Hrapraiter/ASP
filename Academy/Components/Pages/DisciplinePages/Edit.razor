@@ -34,6 +34,7 @@ else
                 </div>
                 @using (AcademyContext context = DbFactory.CreateDbContext()) 
                 { 
+                    <label class="form-label">Преподаватели:</label>
                     <ul>
                         @foreach (Teacher teacher in context.Teachers)
                         {
@@ -78,10 +79,9 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         teachers = context.Teachers.Include(t => t.TDR).ThenInclude(tdr => tdr.Discipline);
-        Discipline ??= await context.Disciplines.Include(d => d.TDR).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
+        Discipline ??= await context.Disciplines.Include(d => d.TDR).ThenInclude(tdr => tdr.Teacher).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
         HashSet<int> selectedTeachers = Discipline.TDR.Select(tdr => tdr.teacher).ToHashSet();
         isTeachers = teachers.ToDictionary(t => t.teacher_id, t => selectedTeachers.Contains(t.teacher_id));
-
         if (Discipline is null)
         {
             NavigationManager.NotFound();
@@ -100,11 +100,12 @@ else
 
         context.TeachersDisciplinesRelation.RemoveRange // опасно выносит записи ManyToMany 
                                                         // в данном случае по выборке TDR из Discipline объекта
+                                                        // в данном случае выносит всё что не выбранно в UI
         (
             Discipline.TDR.Where(tdr => !selectedIds.Contains(tdr.teacher))
                           .ToArray()
         );
-        context.TeachersDisciplinesRelation.AddRange // добавление новых записей
+        context.TeachersDisciplinesRelation.AddRange // добавление новых записей и отфильтровываем те что не изменились
         (
             selectedIds.Where(id => !currentIds.Contains(id))
                        .Select(id => new TeachersDisciplinesRelation

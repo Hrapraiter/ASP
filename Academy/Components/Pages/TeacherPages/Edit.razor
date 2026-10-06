@@ -85,7 +85,21 @@ else
                  </div>
                  <Photo Human="Teacher" AllowChange="true"/>
              </div>
-             <button type="submit" class="btn btn-primary">Save</button>
+
+            @using (AcademyContext context = DbFactory.CreateDbContext())
+            {
+                <label class="form-label">Дисциплины:</label>
+                <ul>
+                    @foreach (Discipline discipline in context.Disciplines)
+                    {
+                        <li style="display:flex">
+                            <input type="checkbox" @bind="isDisciplines[discipline.discipline_id]" />
+                            <label>@discipline.discipline_name</label>
+                        </li>  
+                    }
+                </ul>
+            }
+            <button type="submit" class="btn btn-primary">Save</button>
          </EditForm>
      </div>
         
@@ -102,10 +116,15 @@ else
     [SupplyParameterFromForm]
     private Teacher? Teacher { get; set; }
 
+    public Dictionary<int, bool> isDisciplines { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        Teacher ??= await context.Teachers.FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
+        IQueryable<Discipline> disciplines = context.Disciplines.Include(d => d.TDR);
+        Teacher ??= await context.Teachers.Include(t => t.TDR).ThenInclude(tdr => tdr.Discipline).FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
+        HashSet<int> selectedDisciplines = Teacher!.TDR.Select(tdr => tdr.discipline).ToHashSet();
+        isDisciplines = disciplines.ToDictionary(d => d.discipline_id, d => selectedDisciplines.Contains(d.discipline_id));
 
         if (Teacher is null)
         {
@@ -118,6 +137,27 @@ else
     private async Task UpdateTeacher()
     {
         using var context = DbFactory.CreateDbContext();
+
+        IQueryable<Discipline> disciplines = context.Disciplines;
+        HashSet<int> currentIds = Teacher.TDR.Select(tdr => tdr.discipline).ToHashSet();
+        HashSet<int> selectedIds = isDisciplines.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToHashSet();
+
+        context.TeachersDisciplinesRelation.RemoveRange
+        (
+            Teacher.TDR.Where(tdr => !selectedIds.Contains(tdr.discipline))
+                       .ToArray()
+        );
+        context.TeachersDisciplinesRelation.AddRange
+        (
+            selectedIds.Where(id => !currentIds.Contains(id))
+                       .Select(id => new TeachersDisciplinesRelation
+                       {
+                            teacher = Teacher.teacher_id,
+                            discipline = id
+                       })
+                       .ToArray()
+        );
+
         context.Attach(Teacher!).State = EntityState.Modified;
 
         try

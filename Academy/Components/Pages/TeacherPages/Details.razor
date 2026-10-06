@@ -42,7 +42,10 @@
             <a href="@($"/teachers/delete?teacher_id={teacher.teacher_id}")" class="btn btn-danger">Delete</a>
             <a href="@($"/teachers")" class="btn btn-dark">Back to List</a>
         </div>
-        <h3>Дисциплины:</h3>
+        <div class="controls">
+            <h3>Дисциплины:</h3>
+            <h5>discipline_count: @teacher.TDR.Count()</h5>
+        </div>
         <ul>
             @foreach(TeachersDisciplinesRelation tdr in teacher.TDR)
             {
