@@ -1,0 +1,114 @@
+@page "/schedules/create"
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@using Academy.Components.Controls;
+@rendermode InteractiveServer
+@inject IDbContextFactory<AcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Schedule create</PageTitle>
+
+
+
+<h2>Schedule create</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Schedule" OnValidSubmit="AddSchedule" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+           @*  <div class="mb-3">
+                <label for="group" class="form-label">group:</label> 
+                <InputNumber id="group" @bind-Value="Schedule.group" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.group" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="discipline" class="form-label">discipline:</label> 
+                <InputNumber id="discipline" @bind-Value="Schedule.discipline" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.discipline" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="teacher" class="form-label">teacher:</label> 
+                <InputNumber id="teacher" @bind-Value="Schedule.teacher" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.teacher" class="text-danger" /> 
+            </div>  *@       
+            @using (AcademyContext context = DbFactory.CreateDbContext())
+            {
+
+                <div class="mb-3">
+                    <label class="form-label">Group:</label>
+                    <SimpleSelectInDB Items="context.Groups.ToArray()"
+                                      @bind-Value="Schedule.group"
+                                      OptionName="g => g.group_name"
+                                      OptionValue="g => g.group_id" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Discipline:</label>
+                    <SimpleSelectInDB Items="context.Disciplines.ToArray()"
+                                      @bind-Value="Schedule.discipline"
+                                      OptionName="d => d.discipline_name"
+                                      OptionValue="d => d.discipline_id" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Teacher:</label>
+                    <SimpleSelectInDB Items="context.Teachers.ToArray()"
+                                      @bind-Value="Schedule.teacher"
+                                      OptionName="t => t.FullName"
+                                      OptionValue="t => t.teacher_id" />
+                </div>
+            }
+            <div class="mb-3">
+                <label for="date" class="form-label">date:</label> 
+                <InputDate Type="InputDateType.Date" id="date" @bind-Value="Schedule.date" class="form-control" />
+                <ValidationMessage For="() => Schedule.date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="time" class="form-label">time:</label> 
+                <InputDate Type="InputDateType.Time" id="time" @bind-Value="Schedule.time" class="form-control" />
+                <ValidationMessage For="() => Schedule.time" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="spent" class="form-label">spent:</label> 
+                <input type="checkbox" id="spent" @bind="Schedule.spent" class="form-check-input" />  
+            </div>        
+            @* <div class="mb-3">
+                <label for="group" class="form-label">Group:</label> 
+                <InputText id="group" @bind-Value="Schedule.Group" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.Group" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="teacher" class="form-label">Teacher:</label> 
+                <InputText id="teacher" @bind-Value="Schedule.Teacher" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.Teacher" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="discipline" class="form-label">Discipline:</label> 
+                <InputText id="discipline" @bind-Value="Schedule.Discipline" class="form-control" /> 
+                <ValidationMessage For="() => Schedule.Discipline" class="text-danger" /> 
+            </div>         *@
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/schedules">Back to List</a>
+</div>
+
+@code {
+    
+    [SupplyParameterFromForm]
+    private Schedule Schedule { get; set; } = default!;
+
+    protected override void OnInitialized() => Schedule ??= new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddSchedule()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Schedule.Add(Schedule);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/schedules/details?lesson_id={Schedule.lesson_id}");
+    }
+}

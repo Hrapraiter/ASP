@@ -1,0 +1,42 @@
+﻿@typeparam TItem
+@typeparam TValue
+
+@{
+    <select value="@Value?.ToString()" @onchange="OnChange" class="form-control">
+        @if (InfoOptionName != "")
+        {
+            <option selected disabled>@InfoOptionName</option>
+        }
+        @foreach (TItem item in Items)
+        {
+            <option value="@OptionValue(item)">@OptionName(item)</option>
+        }
+    </select>
+}
+
+@code
+{
+    [Parameter]
+    public string InfoOptionName { get; set; } = "";
+    [Parameter , EditorRequired]
+    public Func<TItem , TValue> OptionValue { get; set; } = default!;
+    [Parameter , EditorRequired]
+    public Func<TItem , string> OptionName { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public IEnumerable<TItem> Items { get; set; } = default!;
+
+    [Parameter]
+    public TValue? Value { get; set; }
+    [Parameter]
+    public EventCallback<TValue?> ValueChanged { get; set; }
+    private async Task OnChange(ChangeEventArgs e)
+    {
+        string? raw = e.Value?.ToString();
+
+        TValue? parsed = string.IsNullOrWhiteSpace(raw) 
+            ? default 
+            : (TValue)Convert.ChangeType(raw, Nullable.GetUnderlyingType(typeof(TValue)) ?? typeof(TValue));
+        
+        await ValueChanged.InvokeAsync(parsed);
+    }
+}

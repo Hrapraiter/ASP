@@ -1,0 +1,52 @@
+@page "/schedules/details"
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@inject IDbContextFactory<AcademyContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Shedule Details</PageTitle>
+
+<div>
+    <h2>Shedule details</h2>
+    <hr />
+    @if (schedule is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-4">group</dt>         <dd class="col-sm-10">@schedule.Group.group_name</dd>
+            <dt class="col-sm-4">discipline</dt>    <dd class="col-sm-10">@schedule.Discipline.discipline_name</dd>
+            <dt class="col-sm-4">teacher</dt>       <dd class="col-sm-10">@schedule.Teacher.FullName</dd>
+            <dt class="col-sm-4">date</dt>          <dd class="col-sm-10">@schedule.date</dd>
+            <dt class="col-sm-4">time</dt>          <dd class="col-sm-10">@schedule.time</dd>
+            <dt class="col-sm-4">spent</dt>         <dd class="col-sm-10">@schedule.spent</dd>
+            @* <dt class="col-sm-4">Group</dt>         <dd class="col-sm-10">@schedule.Group</dd>
+            <dt class="col-sm-4">Teacher</dt>       <dd class="col-sm-10">@schedule.Teacher</dd>
+            <dt class="col-sm-4">Discipline</dt>    <dd class="col-sm-10">@schedule.Discipline</dd> *@
+        </dl>
+        <div>
+            <a href="@($"/schedules/edit?lesson_id={schedule.lesson_id}")" class="btn btn-primary">Edit</a>
+            <a href="@($"/schedules/delete?lesson_id={schedule.lesson_id}")" class="btn btn-danger">Delete</a> 
+            <a href="@($"/schedules")" class="btn btn-dark">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Schedule? schedule;
+
+    [SupplyParameterFromQuery]
+    private long lesson_id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        schedule = await context.Schedule.Include(s => s.Group).Include(s => s.Discipline).Include(s => s.Teacher).FirstOrDefaultAsync(m => m.lesson_id == lesson_id);
+
+        if (schedule is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+}
