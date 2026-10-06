@@ -1,6 +1,7 @@
 @page "/disciplines/create"
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
+@rendermode InteractiveServer
 @inject IDbContextFactory<AcademyContext> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -52,6 +53,6 @@
         using var context = DbFactory.CreateDbContext();
         context.Disciplines.Add(Discipline);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/disciplines");
+        NavigationManager.NavigateTo($"/disciplines/details?discipline_id={Discipline.discipline_id}");
     }
 }

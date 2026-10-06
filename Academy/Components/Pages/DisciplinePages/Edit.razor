@@ -82,6 +82,7 @@ else
         Discipline ??= await context.Disciplines.Include(d => d.TDR).ThenInclude(tdr => tdr.Teacher).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
         HashSet<int> selectedTeachers = Discipline.TDR.Select(tdr => tdr.teacher).ToHashSet();
         isTeachers = teachers.ToDictionary(t => t.teacher_id, t => selectedTeachers.Contains(t.teacher_id));
+
         if (Discipline is null)
         {
             NavigationManager.NotFound();
