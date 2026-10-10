@@ -85,7 +85,9 @@ else
                  </div>
                  <div style="height:100vh;">
                      <Photo Human="Teacher" AllowChange="true" />
-                     <AddDisciplines Teacher="Teacher" />
+                     @* <AddDisciplines Teacher="Teacher" pairs="pairs" /> *@
+                     <AddDisciplines @ref="addDisciplines" Teacher="Teacher" /> @*>>>>>>>>>>>*@
+                    
                  </div>
              </div>
             <button type="submit" class="btn btn-primary">Save</button>
@@ -105,6 +107,9 @@ else
     [SupplyParameterFromForm]
     private Teacher? Teacher { get; set; }
 
+    private AddDisciplines? addDisciplines;//>>>>>>>>>>>>>>>
+
+
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
@@ -122,11 +127,11 @@ else
     private async Task UpdateTeacher()
     {
         using var context = DbFactory.CreateDbContext();
-
         context.Attach(Teacher!).State = EntityState.Modified;
 
         try
         {
+            if (addDisciplines is not null) await addDisciplines.Update();
             await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
