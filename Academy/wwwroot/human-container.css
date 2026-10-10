@@ -11,8 +11,9 @@
 
 .photo-area
 {
-    width: 50%;
-    text-align:center;
+    width: 90%;
+    height: 67vh;
+    text-align: center;
 }
     .photo-area > div
     {

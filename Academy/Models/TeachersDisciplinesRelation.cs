@@ -16,7 +16,7 @@ namespace Academy.Models
         public int discipline { get; set; }
 
         // Navigation propertioes:
-        public Teacher Teacher { get; set; }
-        public Discipline Discipline { get; set; }
+        public Teacher Teacher { get; set; } = null!;
+        public Discipline Discipline { get; set; } = null!;
     }
 }
