@@ -8,7 +8,7 @@ namespace Academy.Models
         [Key]
         [Column("discipline_id",TypeName = "SMALLINT")]
         public int discipline_id { get; set; }
-        [StringLength(maximumLength:150)]
+        [StringLength(maximumLength:150,MinimumLength = 1)]
         public string discipline_name { get; set; }
         
         [Required]

@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ContosoUniversityContext") ?? throw new InvalidOperationException("Connection string 'ContosoUniversityContext' not found.");
 
 builder.Services.AddDbContext<ContosoUniversityContext>(options => options.UseSqlServer(connectionString));
+=======
+var builder = WebApplication.CreateBuilder(args);
+>>>>>>> 81decac088b5e1a86e7c9dc8cfff7c6e805b91ed
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

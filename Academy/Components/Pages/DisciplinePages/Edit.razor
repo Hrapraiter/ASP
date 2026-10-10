@@ -32,24 +32,7 @@ else
                     <InputNumber id="number_of_lessons" @bind-Value="Discipline.number_of_lessons" class="form-control" aria-required="true"/>
                     <ValidationMessage For="() => Discipline.number_of_lessons" class="text-danger" />
                 </div>
-                @using (AcademyContext context = DbFactory.CreateDbContext()) 
-                { 
-                    <label class="form-label">Преподаватели:</label>
-                    <ul>
-                        @foreach (Teacher teacher in context.Teachers)
-                        {
-                            
-                        <li style="display:flex">
-                                @*<input type="checkbox" @onchange="e => isTeachers[teacher.teacher_id] = (bool)e.Value!" class="darker-border-checkbox">"*@
-                                <input type="checkbox" @bind="isTeachers[teacher.teacher_id]" class="darker-border-checkbox">
-                            <label class="form-check-label">@teacher.FullName</label>
-                            <br />
-                        </li>
-                            
-                        }
-                    </ul>
-                    
-                }
+                
                 @* <div class="mb-3">
                     <label for="tdr" class="form-label">TDR:</label>
                     <InputText id="tdr" @bind-Value="Discipline.TDR" class="form-control" />
@@ -72,16 +55,13 @@ else
     [SupplyParameterFromForm]
     private Discipline? Discipline { get; set; }
 
-    IQueryable<Teacher> teachers { get; set; }
-    public Dictionary<int, bool> isTeachers { get; set; } = new();
+    
 
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        teachers = context.Teachers.Include(t => t.TDR).ThenInclude(tdr => tdr.Discipline);
-        Discipline ??= await context.Disciplines.Include(d => d.TDR).ThenInclude(tdr => tdr.Teacher).FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
-        HashSet<int> selectedTeachers = Discipline.TDR.Select(tdr => tdr.teacher).ToHashSet();
-        isTeachers = teachers.ToDictionary(t => t.teacher_id, t => selectedTeachers.Contains(t.teacher_id));
+        Discipline ??= await context.Disciplines.FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
+        
 
         if (Discipline is null)
         {
@@ -94,28 +74,7 @@ else
     private async Task UpdateDiscipline()
     {
         using var context = DbFactory.CreateDbContext();
-        // Console.WriteLine($"\x1b[32m{Discipline.TDR}\x1b[0m");
-
-        HashSet<int> currentIds = Discipline.TDR.Select(tdr => tdr.teacher).ToHashSet(); // собирает id до изменений
-        HashSet<int> selectedIds = isTeachers.Where(kvp => kvp.Value).Select(kvp => kvp.Key).ToHashSet(); // собирает локально изменёные id
-
-        context.TeachersDisciplinesRelation.RemoveRange // опасно выносит записи ManyToMany 
-                                                        // в данном случае по выборке TDR из Discipline объекта
-                                                        // в данном случае выносит всё что не выбранно в UI
-        (
-            Discipline.TDR.Where(tdr => !selectedIds.Contains(tdr.teacher))
-                          .ToArray()
-        );
-        context.TeachersDisciplinesRelation.AddRange // добавление новых записей и отфильтровываем те что не изменились
-        (
-            selectedIds.Where(id => !currentIds.Contains(id))
-                       .Select(id => new TeachersDisciplinesRelation
-                       {
-                            teacher=id,
-                            discipline=Discipline.discipline_id
-                       })
-                       .ToArray()
-        );
+        
         context.Attach(Discipline!).State = EntityState.Modified;
         try
         {
