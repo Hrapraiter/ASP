@@ -6,8 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+  <ItemGroup>
+    <Content Include="Data\DbInitializer.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
@@ -16,8 +18,5 @@
     </PackageReference>
   </ItemGroup>
 
-=======
->>>>>>> 81decac088b5e1a86e7c9dc8cfff7c6e805b91ed
-=======
->>>>>>> 81decac088b5e1a86e7c9dc8cfff7c6e805b91ed
+
 </Project>
