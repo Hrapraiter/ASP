@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using ContosoUniversity.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("ContosoUniversityContext") ?? throw new InvalidOperationException("Connection string 'ContosoUniversityContext' not found.");
@@ -41,13 +42,14 @@ static void CreateDbIfNotExists(IHost host)
 {
     using (IServiceScope scope =  host.Services.CreateScope())
     {
-        IServiceProvider provider =  scope.ServiceProvider;
-        try 
+        // Scope - область видимости
+        IServiceProvider provider = scope.ServiceProvider;
+        try
         {
             ContosoUniversityContext context = provider.GetRequiredService<ContosoUniversityContext>();
             DbInitializer.Initialize(context);
         }
-        catch(Exception ex) 
+        catch (Exception ex)
         {
             ILogger<Program> logger = provider.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "Ошибка инициализации Базы Данных");

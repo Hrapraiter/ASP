@@ -12,8 +12,8 @@ namespace ContosoUniversity.Models
         public Grade? Grade { get;set; }
 
         //Navigation properties:
-        public Student Student { get; set; } = null!;
-        public Course Course { get; set; } = null!;
+        public Student Student { get; set; }
+        public Course Course { get; set; }
         
     }
 }
