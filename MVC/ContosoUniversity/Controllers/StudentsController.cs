@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
+using ContosoUniversity;
 
 public class StudentsController : Controller
 {
@@ -13,14 +14,17 @@ public class StudentsController : Controller
     }
 
     // GET: STUDENTS
-    public async Task<IActionResult> Index(string sortOrder, string searchString)    
+    public async Task<IActionResult> Index(string sortOrder, string searchString , int pageIndex)    
     {
         ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
         ViewData["DateSortParam"] = sortOrder == "date_asc" ? "date_desc" : "date_asc";
         ViewData["CurrentFilter"] = searchString;
+        
         IQueryable<Student> students = from student in _context.Students select student;
+
         if (!(String.IsNullOrEmpty(searchString) && String.IsNullOrWhiteSpace(searchString))) 
         {
+            //pageIndex = 0;
             students = students.Where
                 (
                     student =>
@@ -35,7 +39,9 @@ public class StudentsController : Controller
             case "date_asc":    students = students.OrderBy(s => s.EnrollmentDate);               break;
             default:            students = students.OrderBy(s => s.LastName);                     break;                                  
         }
-        return View(await students.ToListAsync());
+        const int pageSize = 3;
+        return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageIndex , pageSize));
+        //return View(await students.ToListAsync());
     }
 
     // GET: STUDENTS/Details/5
