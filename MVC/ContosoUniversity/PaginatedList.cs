@@ -10,11 +10,11 @@ namespace ContosoUniversity
         public PaginatedList(List<T> items , int count , int pageIndex , int pageSize) 
         {
             this.PageIndex = pageIndex;
-            this.TotalPages = count / pageSize;
+            this.TotalPages = (int)Math.Ceiling((double)count / pageSize);
             this.AddRange(items);
         }
         public bool HasPreviousPage => PageIndex > 0;
-        public bool HasNextPage => PageIndex < TotalPages;
+        public bool HasNextPage => PageIndex < TotalPages-1;
 
         public static async Task<PaginatedList<T>> CreateAsync
             (
