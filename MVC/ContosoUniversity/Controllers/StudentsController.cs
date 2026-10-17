@@ -39,8 +39,16 @@ public class StudentsController : Controller
             case "date_asc":    students = students.OrderBy(s => s.EnrollmentDate);               break;
             default:            students = students.OrderBy(s => s.LastName);                     break;                                  
         }
+        
         const int pageSize = 3;
         return View(await PaginatedList<Student>.CreateAsync(students.AsNoTracking(), pageIndex , pageSize));
+        //return View(await PaginatedList<Student>.CreateAsync
+        //  (
+        //      students.AsNoTracking(),
+        //      pageIndex ?? 1 ,
+        //      pageSize
+        //  )
+        //);
         //return View(await students.ToListAsync());
     }
 
