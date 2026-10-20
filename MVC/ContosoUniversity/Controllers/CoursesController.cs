@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
-
+using ContosoUniversity;
 public class CoursesController : Controller
 {
     private readonly ContosoUniversityContext _context;
@@ -13,9 +13,15 @@ public class CoursesController : Controller
     }
 
     // GET: COURSES
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index(int pageIndex , int itemsPerPage = 3)    
     {
-        return View(await _context.Courses.ToListAsync());
+        return View(await PaginatedList<Course>.CreateAsync
+            (
+                _context.Courses.AsNoTracking(),
+                pageIndex,
+                itemsPerPage
+            )
+        );
     }
 
     // GET: COURSES/Details/5

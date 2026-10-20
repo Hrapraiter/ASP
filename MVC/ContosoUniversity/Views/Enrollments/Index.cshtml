@@ -75,10 +75,9 @@
             <a asp-action="Index"
                asp-route-pageIndex="@i"
             >
-            <div class="@(i == Model.PageIndex ? "selected-page" : "pagination-item")">
-                @(i+1)
-            </div>
-
+                <div class="@(i == Model.PageIndex ? "selected-page" : "pagination-item")">
+                    @(i+1)
+                </div>
             </a>
         }
     </div>
