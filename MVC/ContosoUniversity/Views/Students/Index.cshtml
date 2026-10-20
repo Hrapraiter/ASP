@@ -18,12 +18,22 @@
     </label>
 </form>
 <div>
+    <form method="get">
+        <select name="itemsPerPage" onchange="this.form.submit()">
+            @foreach (int pageSize in (int[])ViewBag.ItemsPerPages)
+                {
+                    <option value="@pageSize" selected="@(pageSize == Model.ItemsPerPage)">@pageSize</option>
+                }
+        </select>
+        <input type="hidden" name="page" value="1"/>
+    </form>
+    @*
     <label for="items-per-page">Items per page:</label>
-    <select id="items-per-page">
+     <select id="items-per-page">
         <option value="3">3</option>
         <option value="5">5</option>
         <option value="8">8</option>
-    </select>
+    </select> *@
 </div>
 <div class="table-container">
     <table class="table">

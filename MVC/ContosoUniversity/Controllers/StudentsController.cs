@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
 using ContosoUniversity;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ContosoUniversity.Data;
 
 public class StudentsController : Controller
 {
@@ -12,7 +14,7 @@ public class StudentsController : Controller
     {
         _context = context;
     }
-
+    readonly int[] Options = { 3, 5, 8 };
     // GET: STUDENTS
     public async Task<IActionResult> Index
     (
@@ -45,7 +47,7 @@ public class StudentsController : Controller
             case "date_asc":    students = students.OrderBy(s => s.EnrollmentDate);               break;
             default:            students = students.OrderBy(s => s.LastName);                     break;                                  
         }
-        
+        ViewBag.ItemsPerPages = new[]{ 3, 5, 8 };
         return View(await PaginatedList<Student>.CreateAsync
                 (
                     students.AsNoTracking(),
