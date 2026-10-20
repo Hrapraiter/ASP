@@ -1,7 +1,7 @@
 ﻿/*      pagination.css       */
 .table-container
 {
-    height:48vh;
+    min-height:50vh;
 }
 .pagination-controls, .pagination-items, .pagination-items > a > div
 {

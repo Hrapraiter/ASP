@@ -47,7 +47,7 @@ public class StudentsController : Controller
             case "date_asc":    students = students.OrderBy(s => s.EnrollmentDate);               break;
             default:            students = students.OrderBy(s => s.LastName);                     break;                                  
         }
-        ViewBag.ItemsPerPages = new[]{ 3, 5, 8 };
+        ViewData["ItemsPerPage"] = itemsPerPage;
         return View(await PaginatedList<Student>.CreateAsync
                 (
                     students.AsNoTracking(),
