@@ -20,7 +20,7 @@
 <div>
     <form method="get">
         <select name="itemsPerPage" onchange="this.form.submit()">
-            @foreach (int pageSize in (int[])ViewBag.ItemsPerPages)
+            @foreach (int pageSize in ViewBag.ItemsPerPages)
                 {
                     <option value="@pageSize" selected="@(pageSize == Model.ItemsPerPage)">@pageSize</option>
                 }
