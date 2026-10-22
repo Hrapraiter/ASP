@@ -5,6 +5,7 @@ public class ContosoUniversityContext(DbContextOptions<ContosoUniversityContext>
     public DbSet<ContosoUniversity.Models.Student> Students { get; set; } = default!;
     public DbSet<ContosoUniversity.Models.Course> Courses { get; set; } = default!;
     public DbSet<ContosoUniversity.Models.Enrollment> Enrollments { get; set; } = default!;
+    //public DbSet<ContosoUniversity.Models.Instructor>  { get; set; } = default!;
 
     //protected override void OnModelCreating(ModelBuilder modelBuilder)
     //{

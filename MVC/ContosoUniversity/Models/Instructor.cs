@@ -1,10 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
     public class Instructor
     {
+        public int Id { get; set; }
+        
+        [Required]
+        [DisplayName("Фамилия")]
+        [StringLength(50)]
+        public string LastName { get; set; }
+
+        [Required]
+        [DisplayName("Имя")]
+        [StringLength(50)]
+        public string FirstName { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}" , ApplyFormatInEditMode = true)]
+        [DisplayName("Дата трудоустройства")]
+        public DateTime HireDate { get; set; }
+
+        //Calculated properties:
+        [DisplayName("Преподаватель")]
+        public string FullName { get => $"{LastName} {FirstName}"; }
+
+        //Navigation properties:
+        public OfficeAssignment OfficeAssignment { get; set; }
+        public ICollection<Course> Courses { get; set; } 
 
     }
 }
