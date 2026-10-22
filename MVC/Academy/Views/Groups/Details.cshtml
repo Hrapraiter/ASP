@@ -1,0 +1,52 @@
+@model Academy.Models.Group
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <h2>@Model.group_name details</h2>
+    <hr />
+</div>
+<div>
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.group_name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.group_name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.direction)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.direction)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.start_date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.start_date)
+        </dd>
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.start_time)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.start_time)
+        </dd>
+        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.learning_days)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.learning_days)
+        </dd>
+    </dl>
+</div>
+<div class="submit-button-container">
+    <a asp-action="Edit" asp-route-group_id="@Model?.group_id" class="btn btn-primary">Edit</a> 
+    <a asp-action="Delete" asp-route-group_id="@Model?.group_id" class="btn btn-danger">Delete</a> 
+    <a asp-action="Index" class="btn btn-dark">Back to List</a>
+</div>

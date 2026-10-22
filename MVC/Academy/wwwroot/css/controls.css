@@ -1,0 +1,16 @@
+﻿.controls 
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.submit-button-container
+{
+    display:flex;
+    align-items:center;
+
+    > a
+    {
+        margin-left:5px;
+    }
+}
