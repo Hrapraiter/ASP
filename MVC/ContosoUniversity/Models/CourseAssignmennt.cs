@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ContosoUniversity.Models
 {
-    [PrimaryKey(nameof(InstructorId) , nameof(CourseId))]
+    [PrimaryKey(nameof(InstructorID) , nameof(CourseID))]
     public class CourseAssignment
     {
         // Composite primary key
         [ForeignKey(nameof(Instructor))]
-        public int InstructorId {  get; set; }
+        public int InstructorID {  get; set; }
         [ForeignKey(nameof(Course))]
-        public int CourseId { get; set; }
+        public int CourseID { get; set; }
         // Composite primary key
 
         //Navigation properties:
