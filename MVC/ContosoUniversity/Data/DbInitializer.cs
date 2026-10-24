@@ -207,15 +207,15 @@ namespace ContosoUniversity.Data
 			context.AddRange(instructors);
 			context.SaveChanges();
 
-			var officeAssignments = new OfficeAssignment[]
+			var officeAssignments = new OfficeAssigment[]
 			{
-				new OfficeAssignment {
+				new OfficeAssigment {
 					Instructor = fakhouri,
 					Location = "Smith 17" },
-				new OfficeAssignment {
+				new OfficeAssigment {
 					Instructor = harui,
 					Location = "Gowan 27" },
-				new OfficeAssignment {
+				new OfficeAssigment {
 					Instructor = kapoor,
 					Location = "Thompson 304" }
 			};

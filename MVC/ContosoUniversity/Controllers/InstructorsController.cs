@@ -21,6 +21,21 @@ public class InstructorsController : Controller
     public async Task<IActionResult> Index(int? id, int? courseID)
     {
         InstructorIndexData viewModel = new InstructorIndexData();
+        /*
+        viewModel.Instructors = await _context.Instructors
+            .Include(i => i.OfficeAssignment)
+            .Include(i => i.CourseAssigments)
+                .ThenInclude(ca => ca.Course)
+                    .ThenInclude(c => c.Enrollments)    
+                        .ThenInclude(e => e.Student)
+            .Include(i => i.CourseAssigments)
+                .ThenInclude(ca => ca.Course)
+                    .ThenInclude(c => c.Department)
+            .AsNoTracking()
+            .OrderBy(i => i.LastName)
+            .ToListAsync();
+        */
+
         viewModel.Instructors = await _context
             .Instructors
             .Include(i => i.OfficeAssignment)
@@ -34,8 +49,8 @@ public class InstructorsController : Controller
             .AsNoTracking()
             .OrderBy(i => i.LastName)
             .ToListAsync();
-        
-        if(id != null) 
+
+        if (id != null) 
         {
             ViewData["InstructorID"] = id.Value;
             /*Instructor instructor = viewModel
