@@ -16,7 +16,7 @@ namespace ContosoUniversity.Models
         //Nagigation properties:
         public ICollection<Enrollment> Enrollments { get; set; }
         public Department Department { get; set; }
-        public ICollection<CourseAssignment> CourseAssignments { get; set; }
+        public ICollection<CourseAssigment> CourseAssignments { get; set; }
         public List<Instructor> Instructors { get; set; } = default!;
     }
 }

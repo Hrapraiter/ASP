@@ -8,7 +8,7 @@ public class ContosoUniversityContext(DbContextOptions<ContosoUniversityContext>
     public DbSet<ContosoUniversity.Models.Instructor> Instructors { get; set; } = default!;
     public DbSet<ContosoUniversity.Models.OfficeAssignment> OfficeAssigments { get; set; } = default!;
     public DbSet<ContosoUniversity.Models.Department> Departments { get; set; } = default!;
-    public DbSet<ContosoUniversity.Models.CourseAssignment> CourseAssignments { get; set; } = default!;
+    public DbSet<ContosoUniversity.Models.CourseAssigment> CourseAssignments { get; set; } = default!;
 
     //protected override void OnModelCreating(ModelBuilder modelBuilder)
     //{

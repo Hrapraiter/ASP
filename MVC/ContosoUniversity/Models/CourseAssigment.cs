@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ContosoUniversity.Models
 {
     [PrimaryKey(nameof(InstructorID) , nameof(CourseID))]
-    public class CourseAssignment
+    public class CourseAssigment
     {
         // Composite primary key
         [ForeignKey(nameof(Instructor))]
