@@ -15,7 +15,8 @@ public class GroupsController : Controller
     // GET: GROUPS
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Groups.ToListAsync());
+        return View(await _context.Groups.Include(g => g.Direction)
+                                         .ToListAsync());
     }
 
     // GET: GROUPS/Details/5
@@ -27,6 +28,7 @@ public class GroupsController : Controller
         }
 
         var group = await _context.Groups
+            .Include(g => g.Direction)
             .FirstOrDefaultAsync(m => m.group_id == group_id);
         if (group == null)
         {
@@ -118,6 +120,7 @@ public class GroupsController : Controller
         }
 
         var group = await _context.Groups
+            .Include(g => g.Direction)
             .FirstOrDefaultAsync(m => m.group_id == group_id);
         if (group == null)
         {

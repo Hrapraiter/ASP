@@ -1,14 +1,59 @@
-@model IEnumerable<Academy.Models.Teacher>
+@* @model IEnumerable<Academy.Models.Teacher> *@
+@model PaginatedList<Academy.Models.Teacher>
 
 @{
     ViewData["Title"] = "Index";
+
+    string nameOrder = (string)ViewData["orderByName"];
+    nameOrder = nameOrder == "" ? "asc" : nameOrder == "asc" ? "desc" : "";
+
+    string dateOrder = (string)ViewData["orderByDate"];
+    dateOrder = dateOrder == "" ? "asc" : dateOrder == "asc" ? "desc" : "";
+
+    int[] selectedItems = new int[]{ 3 , 5 , 8 };
+
+    string previusDisabled = Model.HasPreviusPage ? "" : "disabled";
+    string nextDisabled    = Model.HasNextPage    ? "" : "disabled";
+
+    // string nameOrder = ViewData["orderByName"] == "" ? "asc" : ViewData["orderByName"] == "asc" ? "desc" : "";
+    // string dateOrder = ViewData["orderByDate"] == "" ? "asc" : ViewData["orderByDate"] == "asc" ? "desc" : "";
 }
-<div class="controls">
-    <h2>Teachers</h2>
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
-    </p>
-</div>
+
+
+<h2>Teachers</h2>
+<form id="teachers-index-form-method-get" asp-action="Index" method="get">
+    <div class="controls">
+        <div class="search-container">
+            <input type="search" name="searchString" value="@ViewData["searchString"]" class="form-control" />
+            <input type="submit" value="Найти" class="btn btn-primary"/>
+            <a asp-action="Index" class="btn btn-dark">Сброс</a>
+        </div>
+        <div id="teachers-index-select-items-per-page-container">
+            <label for="teachers-index-select-items-per-page">Items Per Page : </label>
+            <select id="teachers-index-select-items-per-page" name="pageSize" onchange="this.form.submit()">
+                @foreach (int pageSize in selectedItems)
+                {
+                <option value="@pageSize" selected="@(pageSize == (int)ViewData["pageSize"])">@pageSize</option>
+                }
+            </select>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">Добавить</a>
+        <input hidden="hidden" name="orderByName" value="@ViewData["orderByName"]" />
+        <input hidden="hidden" name="orderByDate" value="@ViewData["orderByDate"]" />
+        <input hidden="hidden" name="pageIndex" value="0" />
+    </div>
+    @* <script>
+        const container = document.getElementById("teachers-index-select-items-per-page-container");
+        const form = document.getElementById("teachers-index-form-method-get");
+        const select = document.getElementById("teachers-index-select-items-per-page");
+        select.addEventListener('change', function () {
+            container.innerHTML += '<input hidden="hidden" name="pageIndex" value="0"/>';
+            container.innerHTML += '<input hidden="hidden" name="pageSize" value="' + select.value + '"/>';
+            form.submit();
+        });
+    </script> *@
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -23,22 +68,50 @@
             </th>
             *@
             <th>
-                @Html.DisplayNameFor(model => model.FullName)
+                <a asp-action="Index" 
+                   asp-route-orderByName="@nameOrder"
+                   asp-route-orderByDate="@ViewData["orderByDate"]"
+                   asp-route-searchString="@ViewData["searchString"]"
+                >
+                    @{
+                            char symbol = ' ';
+                            switch(ViewData["orderByName"])
+                            {
+                                case "asc":symbol = '^'; break;
+                                case "desc":symbol = 'v'; break;
+                            }
+                    }
+                    @Html.DisplayNameFor(model => model.FirstOrDefault()!.FullName) @symbol
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.birth_date)
+                <a asp-action="Index"
+                   asp-route-orderByName="@ViewData["orderByName"]"
+                   asp-route-orderByDate="@dateOrder"
+                   asp-route-searchString="@ViewData["searchString"]"
+                >
+                    @{
+                        char symbol = ' ';
+                        switch (ViewData["orderByDate"])
+                        {
+                            case "asc": symbol = '^'; break;
+                            case "desc": symbol = 'v'; break;
+                        }
+                    }
+                    @Html.DisplayNameFor(model => model.FirstOrDefault()!.birth_date) @symbol
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.email)
+                @Html.DisplayNameFor(model => model.FirstOrDefault()!.email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.phone)
+                @Html.DisplayNameFor(model => model.FirstOrDefault()!.phone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.work_since)
+                @Html.DisplayNameFor(model => model.FirstOrDefault()!.work_since)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.rate)
+                @Html.DisplayNameFor(model => model.FirstOrDefault()!.rate)
             </th>
             @* <th>
                 @Html.DisplayNameFor(model => model.photo)
@@ -90,3 +163,23 @@
 }
     </tbody>
 </table>
+<div class="controls">
+    <a asp-action="Index"
+       asp-route-orderByName="@ViewData["orderByName"]"
+       asp-route-orderByDate="@ViewData["orderByDate"]"
+       asp-route-searchString="@ViewData["searchString"]"
+       asp-route-pageSize="@ViewData["pageSize"]"
+       asp-route-pageIndex="@(Model.PageIndex-1)"
+       class="btn btn-default @previusDisabled">
+        Prev
+    </a>
+    <a asp-action="Index"
+       asp-route-orderByName="@ViewData["orderByName"]"
+       asp-route-orderByDate="@ViewData["orderByDate"]"
+       asp-route-searchString="@ViewData["searchString"]"
+       asp-route-pageSize="@ViewData["pageSize"]"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

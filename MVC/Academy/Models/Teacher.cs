@@ -14,5 +14,9 @@ namespace Academy.Models
         [DisplayName("Зар.плата")]
         [Column(TypeName ="SMALLMONEY")]
         public int? rate { get; set; }
+
+        //Navigation properties:
+        [DisplayName("Назначенные дисциплины")]
+        public ICollection<TeachersDisciplinesRelation>? TDRs { get; set; }
     }
 }

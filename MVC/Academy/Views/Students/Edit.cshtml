@@ -13,10 +13,19 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="stud_id" />
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="group" class="control-label"></label>
                 <input asp-for="group" class="form-control" />
                 <span asp-validation-for="group" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="group" class="control-label"></label>
+                <select asp-for="group" class="form-control">
+                    @foreach(Group g in (ICollection<Group>)ViewData["Groups"])
+                        {
+                            <option value="@g.group_id" selected="@(g.group_id == Model.group)" >@g.group_name</option>
+                        }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="last_name" class="control-label"></label>
@@ -55,13 +64,10 @@
             </div> *@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-dark">Back to List</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -35,7 +35,7 @@
                 @Html.DisplayNameFor(model => model.photo)
             </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.group)
+                @Html.DisplayNameFor(model => model.Group.group_name)
             </th>
             <th></th>
         </tr>
@@ -70,7 +70,7 @@
                 @Html.DisplayFor(model => item.photo)
             </td> *@
             <td>
-                @Html.DisplayFor(model => item.group)
+                @Html.DisplayFor(model => item.Group.group_name)
             </td>
            @*  <td>
                 <a asp-action="Edit" asp-route-stud_id="@item.stud_id">Edit</a> |

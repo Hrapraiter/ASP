@@ -1,0 +1,37 @@
+@model IEnumerable<Academy.Models.Direction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="controls">
+    <h1>Directions</h1>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.direction_name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.direction_id">
+                    @Html.DisplayFor(model => item.direction_name)
+                </a>
+            </td>
+            @* <td>
+                <a asp-action="Edit" asp-route-id="@item.direction_id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.direction_id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.direction_id">Delete</a>
+            </td> *@
+        </tr>
+}
+    </tbody>
+</table>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Academy.Models;
+using System.Collections.Immutable;
 
 public class StudentsController : Controller
 {
@@ -11,11 +12,12 @@ public class StudentsController : Controller
     {
         _context = context;
     }
-
+    public Task<List<Group>> Groups { get => _context.Groups.ToListAsync(); } 
     // GET: STUDENTS
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Students.ToListAsync());
+        return View(await _context.Students.Include(s => s.Group)
+                                           .ToListAsync());
     }
 
     // GET: STUDENTS/Details/5
@@ -27,6 +29,7 @@ public class StudentsController : Controller
         }
 
         var student = await _context.Students
+            .Include(s => s.Group)
             .FirstOrDefaultAsync(m => m.stud_id == stud_id);
         if (student == null)
         {
@@ -65,7 +68,7 @@ public class StudentsController : Controller
         {
             return NotFound();
         }
-
+        ViewData["Groups"] = await _context.Groups.ToListAsync();
         var student = await _context.Students.FindAsync(stud_id);
         if (student == null)
         {
@@ -85,7 +88,6 @@ public class StudentsController : Controller
         {
             return NotFound();
         }
-
         if (ModelState.IsValid)
         {
             try
@@ -118,6 +120,7 @@ public class StudentsController : Controller
         }
 
         var student = await _context.Students
+            .Include(s => s.Group)
             .FirstOrDefaultAsync(m => m.stud_id == stud_id);
         if (student == null)
         {

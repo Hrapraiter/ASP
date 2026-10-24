@@ -6,12 +6,12 @@ namespace ContosoUniversity
 {
     public class PaginatedList<T> : List<T>
     {
-        public int ItemsPerPage { get; set; }
+        //public int ItemsPerPage { get; set; }
         public int PageIndex { get; set; }
         public int TotalPages {  get; set; }
         public PaginatedList(List<T> items , int count , int pageIndex , int pageSize) 
         {
-            this.ItemsPerPage = pageSize;
+            //this.ItemsPerPage = pageSize;
             this.PageIndex = pageIndex;
             this.TotalPages = (int)Math.Ceiling((double)count / pageSize);
             this.AddRange(items);

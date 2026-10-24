@@ -31,12 +31,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="birth_date" class="control-label"></label>
-                <input asp-for="birth_date" class="form-control" />
+                <input asp-for="birth_date" type="date" class="form-control" />
                 <span asp-validation-for="birth_date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="work_since" class="control-label"></label>
-                <input asp-for="work_since" class="form-control" />
+                <input asp-for="work_since" type="date" class="form-control" />
                 <span asp-validation-for="work_since" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -60,15 +60,64 @@
                 <span asp-validation-for="photo" class="text-danger"></span>
             </div> *@
             <div class="form-group">
+                <label class="control-label">@Html.DisplayNameFor(model => model.TDRs)</label>
+                <select class="form-select" id="teachers-edit-select-disciplines">
+                    <option value="-1" disabled selected="true">--Назначте дисциплины--</option>
+                    @foreach(Discipline d in (List<Discipline>)ViewData["Disciplines_not_selected"])
+                        {
+                            <option value="@d.discipline_id">@d.discipline_name</option>
+                        }
+                </select>
+                <ul id="teachers-edit-ul-selected-disciplines">
+                    @foreach(Discipline d in (List<Discipline>)ViewData["Disciplines_selected"])
+                        {
+                            <li>@d.discipline_name</li>
+                        }
+                </ul>
+                <script>
+                    //подсветка js покинула чат
+                    let newSelectedIds = [];
+                    const info_option_body = "--Назначте дисциплины--"
+                    const select_form = document.getElementById("teachers-edit-select-disciplines");
+                    const ul_form = document.getElementById("teachers-edit-ul-selected-disciplines");
+                    select_form.addEventListener
+                        ("change", function () //Update Select
+                            {
+                                // кеширование select
+                                const old_selected = select_form[select_form.selectedIndex];
+                                const old_select = [...select_form.options].filter(o => o.value !== "-1").map(o => o = { value: o.value, text: o.text});
+                                
+                                // разширение массива для POST запроса
+                                newSelectedIds.push(old_selected.value);
+                                
+                                // пополнение ul выбранным элементом
+                                const li = document.createElement("li");
+                                li.innerText = old_selected.text;
+                                ul_form.appendChild(li);
+                                
+                                // пересоздание select без выбранного рание option
+                                select_form.innerHTML = '<option value="-1" disabled selected="true">'+ info_option_body + "</option>";
+                                for (const o of old_select) 
+                                {
+                                    if (o.value === old_selected.value) continue;
+                                    const option = document.createElement("option");
+                                    option.value = o.value;
+                                    option.text = o.text;
+                                    select_form.appendChild(option);
+                                }
+                            }
+                        );
+                </script>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-dark">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index" asp-route-teacher_id="@Model.teacher_id">Back to List</a>
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

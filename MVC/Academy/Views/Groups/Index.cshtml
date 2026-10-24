@@ -21,10 +21,10 @@
                 @Html.DisplayNameFor(model => model.start_time)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.learning_days)
+                @Html.DisplayNameFor(model => model.LearningDaysDescription)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.direction)
+                @Html.DisplayNameFor(model => model.Direction.direction_name)
             </th>
             <th></th>
         </tr>
@@ -45,10 +45,10 @@
                 @Html.DisplayFor(model => item.start_time)
             </td>
             <td>
-                @Html.DisplayFor(model => item.learning_days)
+                @Html.DisplayFor(model => item.LearningDaysDescription)
             </td>
             <td>
-                @Html.DisplayFor(model => item.direction)
+                @Html.DisplayFor(model => item.Direction.direction_name)
             </td>
             @* <td>
                 <a asp-action="Edit" asp-route-id="@item.group_id">Edit</a> |

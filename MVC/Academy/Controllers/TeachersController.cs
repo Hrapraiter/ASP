@@ -1,7 +1,7 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Academy.Models;
+using Academy;
 
 public class TeachersController : Controller
 {
@@ -13,9 +13,40 @@ public class TeachersController : Controller
     }
 
     // GET: TEACHERS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index
+    (
+        string orderByName = "",
+        string orderByDate = "" ,
+        string searchString = "",
+        int pageIndex = 0,
+        int pageSize = 3
+    )
     {
-        return View(await _context.Teachers.ToListAsync());
+        IQueryable<Teacher> teachers = _context.Teachers;
+        
+        ViewData["orderByName"] = orderByName;
+        ViewData["orderByDate"] = orderByDate;
+        ViewData["searchString"] = searchString;
+        ViewData["pageSize"] = pageSize;
+
+        teachers = teachers.Where
+            (t =>
+                t.last_name.Contains(searchString) ||
+                t .first_name.Contains(searchString)
+            );
+
+        switch (orderByDate) 
+        {
+            case "asc": teachers    = teachers.OrderBy(t => t.birth_date);          break;
+            case "desc": teachers   = teachers.OrderByDescending(t => t.birth_date);break;
+        }
+        switch (orderByName) 
+        {
+            case "asc": teachers    = teachers.OrderBy(t => t.last_name).ThenBy(t => t.first_name);                     break;
+            case "desc": teachers   = teachers.OrderByDescending(t => t.last_name).ThenByDescending(t => t.first_name); break;
+        }
+
+        return View(await PaginatedList<Teacher>.CreateAsync(teachers , pageIndex , pageSize));
     }
 
     // GET: TEACHERS/Details/5
@@ -26,8 +57,9 @@ public class TeachersController : Controller
             return NotFound();
         }
 
-        var teacher = await _context.Teachers
-            .FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
+        var teacher = await _context.Teachers.Include(t => t.TDRs)
+                                             .ThenInclude(tdr => tdr.Discipline)
+                                             .FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
         if (teacher == null)
         {
             return NotFound();
@@ -65,7 +97,15 @@ public class TeachersController : Controller
         {
             return NotFound();
         }
+        HashSet<int> selectedDisciplines = _context.TeachersDisciplinesRelation.Where(t => t.teacher == teacher_id)
+                                                                               .Select(t => t.discipline)
+                                                                               .ToHashSet<int>();
+        
+        ViewData["Disciplines_not_selected"] = await _context.Disciplines.Where(d => !selectedDisciplines.Contains(d.discipline_id))
+                                                                         .ToListAsync();
 
+        ViewData["Disciplines_selected"] = await _context.Disciplines.Where(d => selectedDisciplines.Contains(d.discipline_id))
+                                                                     .ToListAsync();
         var teacher = await _context.Teachers.FindAsync(teacher_id);
         if (teacher == null)
         {
@@ -118,6 +158,8 @@ public class TeachersController : Controller
         }
 
         var teacher = await _context.Teachers
+            .Include(t => t.TDRs)
+            .ThenInclude(tdr => tdr.Discipline)
             .FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
         if (teacher == null)
         {
