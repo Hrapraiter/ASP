@@ -106,7 +106,7 @@ public class GroupsController : Controller
 
             //SwitchForIndexBody(ref students, s => s.birth_date, StudentOrderByDate);
             
-            switch (StudentOrderByName)
+            switch (StudentOrderByDate)
             {
                 case "asc":  students = students.OrderBy(s => s.birth_date);           break;
                 case "desc": students = students.OrderByDescending(s => s.birth_date); break;
