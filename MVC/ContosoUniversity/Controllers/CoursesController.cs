@@ -73,6 +73,7 @@ public class CoursesController : Controller
         {
             return NotFound();
         }
+        PopulateDepartmentDropDownList(courseid);
 
         var course = await _context.Courses.FindAsync(courseid);
         if (course == null)
@@ -114,7 +115,6 @@ public class CoursesController : Controller
             }
             return RedirectToAction(nameof(Index));
         }
-        PopulateDepartmentDropDownList(course.DepartmentID);
         return View(course);
     }
 
