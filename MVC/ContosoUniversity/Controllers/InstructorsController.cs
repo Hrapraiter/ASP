@@ -38,7 +38,7 @@ public class InstructorsController : Controller
 
         viewModel.Instructors = await _context
             .Instructors
-            .Include(i => i.OfficeAssignment)
+            .Include(i => i.OfficeAssigment)
             .Include(i => i.CourseAssigments)
                 .ThenInclude(ca => ca.Course)
                     .ThenInclude(c => c.Enrollments)

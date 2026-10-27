@@ -26,16 +26,21 @@
                 @* @Html.DisplayNameFor(model => model.HireDate) *@
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Instructors.Single().OfficeAssigment)
                 @* @Html.DisplayNameFor(model => model.Instructors.Single().FullName) *@
                 @* @Html.DisplayNameFor(model => model.FullName) *@
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Instructors.Single().CourseAssigments)
+            </th>
+            <th></th> 
             @* <th>
                 @Html.DisplayNameFor(model => model.OfficeAssignment)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CourseAssigments)
             </th>
-            <th></th> *@
+            *@
         </tr>
     </thead>
     <tbody>
@@ -54,9 +59,9 @@
             @Html.DisplayFor(model => item.HireDate)
         </td>
         <td>
-            @if(item.OfficeAssignment != null)
+            @if(item.OfficeAssigment != null)
             {
-                @item.OfficeAssignment.Location;
+                @item.OfficeAssigment.Location;
             }
         </td>
         <td>
@@ -112,6 +117,27 @@
                     <td>@course.Department.Name</td>
                 </tr>
 
+            }
+        </tbody>
+    </table>
+}
+@if(Model.Enrollments != null)
+{
+    <h3>Students enrolled in selected Course</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Enrollment enrollment in Model.Enrollments)
+            {
+                <tr >
+                    <td>@enrollment.Student.FullName</td>
+                    <td>@Html.DisplayFor(model => enrollment.Grade)</td>
+                </tr>
             }
         </tbody>
     </table>
