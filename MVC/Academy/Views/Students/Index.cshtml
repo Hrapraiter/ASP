@@ -1,14 +1,44 @@
-@model IEnumerable<Academy.Models.Student>
+@* @model IEnumerable<Academy.Models.Student> *@
+@model Academy.PaginatedList<Student>
 
 @{
     ViewData["Title"] = "Index";
+    // ModelIndexArgs oldStudArgs = (ModelIndexArgs)ViewData["studArgs"];
+
+    string orderName = MarkupHtmlHelper.OrderInnit((string)ViewData["orderByName"]);
+    string orderDate = MarkupHtmlHelper.OrderInnit((string)ViewData["orderByDate"]);
+
+    (string previusDisabled,string nextDisabled) = MarkupHtmlHelper.InnitPrevAndNextDisabled(Model);
+    
+
+    int[] selectedItems = new int[] { 3 , 5 , 8 };
 }
 
 
-<div class="controls">
-    <h2>Students</h2>
-    <p><a asp-action="Create" class="btn btn-primary">Create New</a></>
-</div>
+<h2>Students</h2>
+<form asp-action="Index" method="get" class="controls">
+    <div class="search-container">
+        @{
+            
+        }
+        <input type="search" name="searchString" value="@ViewData["searchString"]" />
+        <input type="submit" value="Найти" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-dark">Сброс</a>
+    </div>
+    <div class="controls">
+        <label for="student-index-form-select-ItemsPerPage">Items Per Page : </label>
+        <select id="student-index-form-select-ItemsPerPage" name="pageSize" onchange="this.form.submit()">
+            @foreach (int pageSize in selectedItems)
+            {
+                <option value="@pageSize" selected="@(pageSize == (int)ViewData["pageSize"])">@pageSize</option>
+            }
+        </select>
+    </div>
+    <input hidden="hidden" name="orderByName" value="@ViewData["orderByName"]" />
+    <input hidden="hidden" name="orderByDate" value="@ViewData["orderByDate"]" />
+
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -21,21 +51,37 @@
             <th>
                 @Html.DisplayNameFor(model => model.middle_name)
             </th> *@
-            <th>@Html.DisplayNameFor(model => model.FullName)</th>
             <th>
-                @Html.DisplayNameFor(model => model.birth_date)
+                <a asp-action="Index"
+                   asp-route-orderByName="@orderName"
+                   asp-route-orderByDate="@ViewData["orderByDate"]"
+                   asp-route-searchString="@ViewData["searchString"]"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                >
+                    @Html.DisplayNameFor(model => model.First().FullName) @MarkupHtmlHelper.DisplayOrder((string)ViewData["orderByName"])
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.email)
+                <a asp-action="Index"
+                   asp-route-orderByName="@ViewData["orderByName"]"
+                   asp-route-orderByDate="@orderDate"
+                   asp-route-searchString="@ViewData["searchString"]"
+                   asp-route-pageSize="@ViewData["pageSize"]"
+                >
+                    @Html.DisplayNameFor(model => model.First().birth_date) @MarkupHtmlHelper.DisplayOrder((string)ViewData["orderByDate"])
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.phone)
+                @Html.DisplayNameFor(model => model.First().email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.First().phone)
             </th>
             @* <th>
                 @Html.DisplayNameFor(model => model.photo)
             </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.Group.group_name)
+                @Html.DisplayNameFor(model => model.First().Group.group_name)
             </th>
             <th></th>
         </tr>
@@ -81,3 +127,37 @@
 }
     </tbody>
 </table>
+<div class="pagination-container">
+    <a asp-action="Index"
+       asp-route-orderByName="@ViewData["orderByName"]"
+       asp-route-orderByDate="@ViewData["orderByDate"]"
+       asp-route-searchString="@ViewData["searchString"]"
+       asp-route-pageIndex="@(Model.PageIndex - 1)"
+       asp-route-pageSize="@ViewData["pageSize"]"
+       class="btn btn-default @previusDisabled">
+        Prev
+    </a>
+    <div class="paginated-items">
+        @for (int i = 0; i < Model.TotalPages; i++)
+        {
+            <a asp-action="Index"
+               asp-route-orderByName="@ViewData["orderByName"]"
+               asp-route-orderByDate="@ViewData["orderByDate"]"
+               asp-route-searchString="@ViewData["searchString"]"
+               asp-route-pageIndex="@i"
+               asp-route-pageSize="@ViewData["pageSize"]"
+               class="@(i == Model.PageIndex ? "selected-item" : "paginated-item")">
+                @(i + 1)
+            </a>
+        }
+    </div>
+    <a asp-action="Index"
+       asp-route-orderByName="@ViewData["orderByName"]"
+       asp-route-orderByDate="@ViewData["orderByDate"]"
+       asp-route-searchString="@ViewData["searchString"]"
+       asp-route-pageIndex="@(Model.PageIndex + 1)"
+       asp-route-pageSize="@ViewData["pageSize"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>
+</div>

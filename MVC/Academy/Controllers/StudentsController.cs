@@ -3,21 +3,70 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Academy.Models;
 using System.Collections.Immutable;
+using Academy;
+using Microsoft.SqlServer.Server;
 
 public class StudentsController : Controller
 {
     private readonly AcademyContext _context;
 
     public StudentsController(AcademyContext context)
-    {
+    { 
         _context = context;
     }
-    public Task<List<Group>> Groups { get => _context.Groups.ToListAsync(); } 
+    public Task<List<Group>> Groups { get => _context.Groups.ToListAsync(); }
     // GET: STUDENTS
-    public async Task<IActionResult> Index()    
+    //public async Task<IActionResult> Index()    
+    //{
+    //    return View(await _context.Students.Include(s => s.Group)
+    //                                       .ToListAsync());
+    public async Task<IActionResult> Index
+    (
+        string orderByName = "",
+        string orderByDate = "",
+        string searchString = "",
+        int pageIndex= 0,
+        int pageSize = 5
+    )    
+    //public async Task<IActionResult> Index([Bind("orderByName,orderByDate,searchString,pageIndex,pageSize")] ModelIndexArgs studArgs)    
     {
-        return View(await _context.Students.Include(s => s.Group)
-                                           .ToListAsync());
+        ViewData["orderByName"] = orderByName;
+        ViewData["orderByDate"] = orderByDate;
+        ViewData["searchString"] = searchString;
+
+        ViewData["pageIndex"] = pageIndex;
+        ViewData["pageSize"] = pageSize;
+
+        searchString = searchString.ToLower();
+
+        HashSet<int> searchStudentIds = (await _context.Students
+                .AsNoTracking()
+                .ToListAsync()
+             )
+            .Where(s => s.FullName.ToLower().Contains(searchString))
+            .Select(s => s.stud_id)
+            .ToHashSet();
+
+        IQueryable<Student> students = _context.Students
+            .Include(s => s.Group)
+            .AsNoTracking()
+            .Where(s => searchStudentIds.Contains(s.stud_id));
+
+
+        switch (orderByDate) 
+        {
+            case "asc"  : students = students.OrderBy(s => s.birth_date);           break; 
+            case "desc" : students = students.OrderByDescending(s => s.birth_date); break;
+        }
+        switch (orderByName) 
+        {
+            case "asc"  : students = students.OrderBy(s => s.last_name).ThenBy(s => s.first_name);           break; 
+            case "desc" : students = students.OrderByDescending(s => s.last_name).ThenByDescending(s => s.first_name); break;
+        }
+
+        return View(await PaginatedList<Student>.CreateAsync(students, pageIndex, pageSize));
+        //return View(await _context.Students.Include(s => s.Group)
+        //                                   .ToListAsync());
     }
 
     // GET: STUDENTS/Details/5
