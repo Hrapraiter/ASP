@@ -12,16 +12,12 @@
 
     int[] selectedItems = new int[] { 3, 5, 8 };
 
-    string groupsPreviusDisabled = Model.Groups!.HasPreviusPage ? "" : "disabled";
-    string groupsNextDisabled = Model.Groups!.HasNextPage ? "" : "disabled";
+    (string groupsPreviusDisabled, string groupsNextDisabled) = MarkupHtmlHelper.InnitPrevAndNextDisabled(Model.Groups!);
 
     string studentsPreviusDisabled = "";
     string studentsNextDisabled = "";
-    if(Model.Students != null)
-    {
-        studentsPreviusDisabled = Model.Students!.HasPreviusPage ? "" : "disabled";
-        studentsNextDisabled    = Model.Students!.HasNextPage ? "" : "disabled";   
-    }
+    if (Model.Students != null)
+        (studentsPreviusDisabled, studentsNextDisabled) = MarkupHtmlHelper.InnitPrevAndNextDisabled(Model.Students!);  
 }
 
 

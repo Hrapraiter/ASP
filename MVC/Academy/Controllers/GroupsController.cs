@@ -22,14 +22,15 @@ public class GroupsController : Controller
     //    return View(await _context.Groups.Include(g => g.Direction)
     //                                     .ToListAsync());
     //}
-    void SwitchForIndexBody<T,TResult>(ref IQueryable<T> items, Func<T, TResult> order_func , string switch_str)
-    {
-        switch (switch_str)
-        {
-            case "asc"  : items = items.OrderBy(order_func).AsQueryable(); break;
-            case "desc" : items = items.OrderByDescending(order_func).AsQueryable(); break;
-        }
-    }
+
+    //void SwitchForIndexBody<T,TResult>(ref IQueryable<T> items, Func<T, TResult> order_func , string switch_str)
+    //{
+    //    switch (switch_str)
+    //    {
+    //        case "asc"  : items = items.OrderBy(order_func).AsQueryable(); break;
+    //        case "desc" : items = items.OrderByDescending(order_func).AsQueryable(); break;
+    //    }
+    //}
     public async Task<IActionResult> Index
     (
         int? group_id,
