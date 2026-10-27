@@ -22,18 +22,20 @@ public class TeachersController : Controller
         int pageSize = 3
     )
     {
-        IQueryable<Teacher> teachers = _context.Teachers;
         
         ViewData["orderByName"] = orderByName;
         ViewData["orderByDate"] = orderByDate;
         ViewData["searchString"] = searchString;
         ViewData["pageSize"] = pageSize;
 
-        teachers = teachers.Where
-            (t =>
-                t.last_name.Contains(searchString) ||
-                t .first_name.Contains(searchString)
-            );
+        searchString = searchString.ToLower();
+
+        HashSet<int> teachersSearchIds = (await _context.Teachers.AsNoTracking().ToListAsync())
+            .Where(t => t.FullName.ToLower().Contains(searchString))
+            .Select(t => t.teacher_id)
+            .ToHashSet();
+
+        IQueryable<Teacher> teachers = _context.Teachers.Where(t => teachersSearchIds.Contains(t.teacher_id));
 
         switch (orderByDate) 
         {

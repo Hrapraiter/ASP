@@ -2,7 +2,7 @@
 @model PaginatedList<Academy.Models.Teacher>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Teachers";
 
     string nameOrder = (string)ViewData["orderByName"];
     nameOrder = nameOrder == "" ? "asc" : nameOrder == "asc" ? "desc" : "";
@@ -13,8 +13,7 @@
     int[] selectedItems = new int[]{ 3 , 5 , 8 };
 
     string previusDisabled = Model.HasPreviusPage ? "" : "disabled";
-    string nextDisabled    = Model.HasNextPage    ? "" : "disabled";
-
+    string nextDisabled = Model.HasNextPage ? "" : "disabled";
     // string nameOrder = ViewData["orderByName"] == "" ? "asc" : ViewData["orderByName"] == "asc" ? "desc" : "";
     // string dateOrder = ViewData["orderByDate"] == "" ? "asc" : ViewData["orderByDate"] == "asc" ? "desc" : "";
 }
@@ -163,7 +162,7 @@
 }
     </tbody>
 </table>
-<div class="controls">
+<div class="pagination-container">
     <a asp-action="Index"
        asp-route-orderByName="@ViewData["orderByName"]"
        asp-route-orderByDate="@ViewData["orderByDate"]"
@@ -173,6 +172,20 @@
        class="btn btn-default @previusDisabled">
         Prev
     </a>
+    <div class="paginated-items">
+        @for(int i = 0; i < Model.TotalPages;i++)
+        {
+            <a asp-action="Index"
+               asp-route-orderByName="@ViewData["orderByName"]"
+               asp-route-orderByDate="@ViewData["orderByDate"]"
+               asp-route-searchString="@ViewData["searchString"]"
+               asp-route-pageSize="@ViewData["pageSize"]"
+               asp-route-pageIndex="@i"
+               class="@(Model.PageIndex == i ? "selected-item" : "paginated-item")">
+                @(i+1)
+            </a>
+        }
+    </div>
     <a asp-action="Index"
        asp-route-orderByName="@ViewData["orderByName"]"
        asp-route-orderByDate="@ViewData["orderByDate"]"

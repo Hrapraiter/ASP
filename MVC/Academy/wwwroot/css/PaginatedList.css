@@ -1,0 +1,31 @@
+﻿.pagination-container
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.paginated-items
+{
+    display: flex;
+    > .selected-item, > .paginated-item
+    {
+        --size:28px;
+        height:var(--size);
+        width:var(--size);
+        margin:3px;
+        border:solid 1px;
+
+        display:flex;
+        justify-content:center;
+        align-content:center;
+    }
+    > .selected-item
+    {
+        color:black;
+        box-shadow: 0px 0px 4px 1px grey;
+    }
+    > .paginated-item
+    {
+        color:darkgrey;
+    }
+}

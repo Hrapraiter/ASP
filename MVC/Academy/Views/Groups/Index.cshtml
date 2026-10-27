@@ -1,61 +1,335 @@
-@model IEnumerable<Academy.Models.Group>
+@* @model IEnumerable<Academy.Models.Group> *@
+@model Academy.Views.ViewModel.GroupIndexData
 
 @{
     ViewData["Title"] = "Index";
+
+    //Innit methods
+    string OrderInnit(string controllerOrderStr) => controllerOrderStr == "" ? "asc" : controllerOrderStr == "asc" ? "desc" : "";
+
+    //Local variables
+    string groupNameOrder = OrderInnit((string)ViewData["groupOrderByName"]);
+    string groupDateOrder = OrderInnit((string)ViewData["groupOrderByDate"]);
+
+    string studentNameOrder = OrderInnit((string)ViewData["studentOrderByName"]);
+    string studentDateOrder = OrderInnit((string)ViewData["studentOrderByDate"]);
+
+    int[] selectedItems = new int[] { 3, 5, 8 };
+
+    string groupsPreviusDisabled = Model.Groups!.HasPreviusPage ? "" : "disabled";
+    string groupsNextDisabled = Model.Groups!.HasNextPage ? "" : "disabled";
+
+    string studentsPreviusDisabled = "";
+    string studentsNextDisabled = "";
+    if(Model.Students != null)
+    {
+        studentsPreviusDisabled = Model.Students!.HasPreviusPage ? "" : "disabled";
+        studentsNextDisabled    = Model.Students!.HasNextPage ? "" : "disabled";   
+    }
+
+    //Help methods
+    char DisplayOrder(string orderStr) => orderStr == "asc" ? '^' : orderStr == "desc" ? 'v' : ' ';
 }
 
-<div class="controls">
-    <h2>Groups</h2>
+
+<h2>Groups</h2>
+<form asp-action="Index" method="get" class="controls">
+    <div class="search-container">
+        <input type="search" name="GroupSearchString" value="@ViewData["groupSearchString"]" />
+        <input type="submit" value="Найти" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-dark">Сброс</a>
+    </div>
+    <div class="controls">
+        <label for="group-index-form-select-ItemsPerPage">Items Per Page : </label>
+        <select id="group-index-form-select-ItemsPerPage" name="GroupPageSize" onchange="this.form.submit()">
+            @foreach(int pageSize in selectedItems)
+            {
+            <option value="@pageSize" selected="@(pageSize == (int)ViewData["groupPageSize"])">@pageSize</option>
+            }
+        </select>
+    </div>
+    <input hidden="hidden" name="GroupOrderByName" value="@ViewData["groupOrderByName"]"/>
+    <input hidden="hidden" name="GroupOrderByDate" value="@ViewData["groupOrderByDate"]"/>
+
     <a asp-action="Create" class="btn btn-primary">Create New</a>
-</div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.group_name)
+                <a asp-action="Index"
+                   asp-route-GroupOrderByName="@groupNameOrder"
+                   asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+                   asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                   asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+                >
+                    @Html.DisplayNameFor(model => model.Groups!.FirstOrDefault()!.group_name) @DisplayOrder((string)ViewData["groupOrderByName"])
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.start_date)
+                <a asp-action="Index"
+                   asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+                   asp-route-GroupOrderByDate="@groupDateOrder"
+                   asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                   asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+                >
+                    @Html.DisplayNameFor(model => model.Groups!.FirstOrDefault()!.start_date) @DisplayOrder((string)ViewData["groupOrderByDate"])
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.start_time)
+                @Html.DisplayNameFor(model => model.Groups!.FirstOrDefault()!.start_time)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LearningDaysDescription)
+                @Html.DisplayNameFor(model => model.Groups!.FirstOrDefault()!.LearningDaysDescription)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Direction.direction_name)
+                @Html.DisplayNameFor(model => model.Groups!.FirstOrDefault()!.Direction.direction_name)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            
-            <td>
-                <a asp-action="Details" asp-route-group_id="@item.group_id">
-                    @Html.DisplayFor(model => item.group_name)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.start_date)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.start_time)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.LearningDaysDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Direction.direction_name)
-            </td>
-            @* <td>
-                <a asp-action="Edit" asp-route-id="@item.group_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.group_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.group_id">Delete</a>
-            </td> *@
-        </tr>
-}
+        @foreach (var item in Model.Groups!) 
+        {
+            string selectedRow = "";
+            if (item.group_id == (int?)ViewData["group_id"]) selectedRow = "table-success";
+            <tr class="@selectedRow">
+                
+                <td>
+                    <a asp-action="Details" asp-route-group_id="@item.group_id">
+                        @Html.DisplayFor(model => item.group_name)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.start_date)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.start_time)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.LearningDaysDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.Direction.direction_name)
+                </td>
+                <td>
+                    <a asp-action="Index"
+                       asp-route-group_id="@item.group_id"
+                       asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+                       asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+                       asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                       asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+                       asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+                    >
+                        Select
+                    </a>
+                </td>
+                @* <td>
+                    <a asp-action="Edit" asp-route-id="@item.group_id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.group_id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.group_id">Delete</a>
+                </td> *@
+            </tr>
+        }
     </tbody>
 </table>
+<div class="pagination-container">
+    <a asp-action="Index"
+       asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+       asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+       asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+       asp-route-GroupPageIndex="@(Model.Groups!.PageIndex - 1)"
+       asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+       class="btn btn-default @groupsPreviusDisabled"
+    >
+        Prev
+    </a>
+    <div class="paginated-items">
+        @for(int i = 0 ;i < Model.Groups!.TotalPages;i++)
+        {
+            <a asp-action="Index"
+               asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+               asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+               asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+               asp-route-GroupPageIndex="@i"
+               asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+               class="@(i == Model.Groups!.PageIndex ? "selected-item" : "paginated-item")"
+            >
+                @(i + 1)
+            </a>
+        }
+    </div>
+    <a asp-action="Index"
+       asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+       asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+       asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+       asp-route-GroupPageIndex="@(Model.Groups!.PageIndex + 1)"
+       asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+       class="btn btn-default @groupsNextDisabled"
+    >
+        Next
+    </a>
+</div>
+@if (Model.Students != null)
+{
+    <hr />
+    <h3>Students from @ViewData["group_name"]</h3>
+    <hr />
+    <h2>Students</h2>
+    <form asp-action="Index" method="get" class="controls">
+        <div class="search-container">
+            <input type="search" name="StudentSearchString" value="@ViewData["studentSearchString"]" />
+            <input type="submit" value="Найти" class="btn btn-primary" />
+            <a asp-action="Index"
+               asp-route-group_id="@ViewData["group_id"]"
+               asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+               asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+               asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+               asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+               asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+               class="btn btn-dark"
+            >
+                Сброс
+            </a>
+        </div>
+        <div class="controls">
+            <label for="group-student-index-form-select-ItemsPerPage">Items Per Page : </label>
+            <select id="group-student-index-form-select-ItemsPerPage" name="StudentPageSize" onchange="this.form.submit()">
+                @foreach (int pageSize in selectedItems)
+                {
+                    <option value="@pageSize" selected="@(pageSize == (int)ViewData["studentPageSize"])">@pageSize</option>
+                }
+            </select>
+        </div>
+        <input hidden="hidden" name="group_id" value="@ViewData["group_id"]" />
+        <input hidden="hidden" name="GroupOrderByName" value="@ViewData["groupOrderByName"]" />
+        <input hidden="hidden" name="GroupOrderByDate" value="@ViewData["groupOrderByDate"]" />
+        <input hidden="hidden" name="GroupSearchString" value="@ViewData["groupSearchString"]" />
+        <input hidden="hidden" name="GroupPageIndex" value="@ViewData["groupPageIndex"]" />
+        <input hidden="hidden" name="GroupPageSize" value="@ViewData["groupPageSize"]" />
+
+        <input hidden="hidden" name="StudentOrderByName" value="@ViewData["studentOrderByName"]" />
+        <input hidden="hidden" name="StudentOrderByDate" value="@ViewData["studentOrderByDate"]" />
+    </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    
+                    <a asp-action="Index"
+                       asp-route-group_id="@ViewData["group_id"]"
+                       asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+                       asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+                       asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                       asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+                       asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+
+                       asp-route-StudentOrderByName="@studentNameOrder"
+                       asp-route-StudentOrderByDate="@ViewData["studentOrderByDate"]"
+                       asp-route-StudentSearchString="@ViewData["studentSearchString"]"
+                       asp-route-StudentPageSize="@ViewData["studentPageSize"]"
+                    >
+                        @Html.DisplayNameFor(model => model.Students!.FirstOrDefault().FullName) @DisplayOrder((string)ViewData["studentOrderByName"])
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-group_id="@ViewData["group_id"]"
+                       asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+                       asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+                       asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                       asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+                       asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+
+                       asp-route-StudentOrderByName="@ViewData["studentOrderByName"]"
+                       asp-route-StudentOrderByDate="@studentDateOrder"
+                       asp-route-StudentSearchString="@ViewData["studentSearchString"]"
+                       asp-route-StudentPageSize="@ViewData["studentPageSize"]"
+                    >
+                        @Html.DisplayNameFor(model => model.Students!.FirstOrDefault().birth_date) @DisplayOrder((string)ViewData["studentOrderByDate"])
+                    </a>
+                </th>
+                <th>@Html.DisplayNameFor(model => model.Students!.FirstOrDefault().email)</th>
+                <th>@Html.DisplayNameFor(model => model.Students!.FirstOrDefault().phone)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Student student in Model.Students!)
+            {
+                <tr>
+                    <td>
+                        <a asp-controller="Students"
+                           asp-action="Details"
+                           asp-route-stud_id="@student.stud_id"
+                        >
+                            @Html.DisplayFor(model => student.FullName)
+                        </a>
+                    </td>
+                    <td>@Html.DisplayFor(model => student.birth_date)</td>
+                    <td>@Html.DisplayFor(model => student.email)</td>
+                    <td>@Html.DisplayFor(model => student.phone)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="pagination-container">
+        <a asp-action="Index"
+           asp-route-group_id="@ViewData["group_id"]"
+           asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+           asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+           asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+           asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+           asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+
+           asp-route-StudentOrderByName="@ViewData["studentOrderByName"]"
+           asp-route-StudentOrderByDate="@ViewData["studentOrderByDate"]"
+           asp-route-StudentSearchString="@ViewData["studentSearchString"]"
+           asp-route-StudentPageIndex="@(Model.Students!.PageIndex - 1)"
+           asp-route-StudentPageSize="@ViewData["studentPageSize"]"
+           class="btn btn-default @studentsPreviusDisabled"
+        >
+            Prev
+        </a>
+        <div class="paginated-items">
+            @for (int i = 0; i < Model.Students!.TotalPages; i++)
+            {
+                <a asp-action="Index"
+                   asp-route-group_id="@ViewData["group_id"]"
+                   asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+                   asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+                   asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+                   asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+                   asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+                   
+                   asp-route-StudentOrderByName="@ViewData["studentOrderByName"]"
+                   asp-route-StudentOrderByDate="@ViewData["studentOrderByDate"]"
+                   asp-route-StudentSearchString="@ViewData["studentSearchString"]"
+                   asp-route-StudentPageIndex="@i"
+                   asp-route-StudentPageSize="@ViewData["studentPageSize"]"
+
+                   class="@(i == Model.Students!.PageIndex ? "selected-item" : "paginated-item")"
+                >
+                    @(i + 1)
+                </a>
+            }
+        </div>
+        <a asp-action="Index"
+           asp-route-group_id="@ViewData["group_id"]"
+           asp-route-GroupOrderByName="@ViewData["groupOrderByName"]"
+           asp-route-GroupOrderByDate="@ViewData["groupOrderByDate"]"
+           asp-route-GroupSearchString="@ViewData["groupSearchString"]"
+           asp-route-GroupPageIndex="@ViewData["groupPageIndex"]"
+           asp-route-GroupPageSize="@ViewData["groupPageSize"]"
+
+           asp-route-StudentOrderByName="@ViewData["studentOrderByName"]"
+           asp-route-StudentOrderByDate="@ViewData["studentOrderByDate"]"
+           asp-route-StudentSearchString="@ViewData["studentSearchString"]"
+           asp-route-StudentPageIndex="@(Model.Students!.PageIndex + 1)"
+           asp-route-StudentPageSize="@ViewData["studentPageSize"]"
+           class="btn btn-default @studentsNextDisabled">
+            Next
+        </a>
+    </div>
+}

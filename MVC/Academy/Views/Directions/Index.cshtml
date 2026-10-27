@@ -1,4 +1,5 @@
-@model IEnumerable<Academy.Models.Direction>
+@* @model IEnumerable<Academy.Models.Direction> *@
+@model Academy.Views.ViewModel.DirectionsIndexData
 
 @{
     ViewData["Title"] = "Index";
@@ -13,25 +14,101 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.direction_name)
+                @Html.DisplayNameFor(model => model.Directions!.FirstOrDefault().direction_name)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.direction_id">
+        @foreach (Direction item in Model.Directions!) 
+        {
+            string selectedRow = "";
+            if (item.direction_id == (int?)ViewData["id"]) selectedRow = "table-success";
+            <tr class="@selectedRow">
+                <td>
+                    @* <a asp-action="Details" asp-route-id="@item.direction_id">
+                        @Html.DisplayFor(model => item.direction_name)
+                    </a> *@
                     @Html.DisplayFor(model => item.direction_name)
-                </a>
-            </td>
-            @* <td>
-                <a asp-action="Edit" asp-route-id="@item.direction_id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.direction_id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.direction_id">Delete</a>
-            </td> *@
-        </tr>
-}
+                </td>
+                <td>
+                    <a asp-action="Index" asp-route-id="@item.direction_id">Select</a> |
+                    <a asp-action="Edit" asp-route-id="@item.direction_id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.direction_id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.direction_id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@if(Model.Groups != null)
+{
+    <hr />
+    <h3>Groups from @Model.Directions.First(d => d.direction_id == (int)ViewData["id"]).direction_name</h3>
+    <hr />
+    <h2>Groups</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Groups.FirstOrDefault().group_name)</th>
+                <th>@Html.DisplayNameFor(m => m.Groups.FirstOrDefault().start_date)</th>
+                <th>@Html.DisplayNameFor(m => m.Groups.FirstOrDefault().start_time)</th>
+                <th>@Html.DisplayNameFor(m => m.Groups.FirstOrDefault().LearningDaysDescription)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Group group in Model.Groups!)
+            {
+                string selectedRow = "";
+                if (group.group_id == (int?)ViewData["groupID"]) selectedRow = "table-success";
+                <tr class="@selectedRow">
+                    <td>@group.group_name</td>
+                    <td>@group.start_date</td>
+                    <td>@group.start_time</td>
+                    <td>@group.LearningDaysDescription</td>
+                    <td>
+                        <a asp-action="Index" asp-route-id="@ViewData["id"]" asp-route-groupID="@group.group_id">Select</a> |
+                        <a asp-controller="Groups" asp-action="Edit" asp-route-group_id="@group.group_id">Edit</a> |
+                        <a asp-controller="Groups" asp-action="Details" asp-route-group_id="@group.group_id">Details</a> |
+                        <a asp-controller="Groups" asp-action="Delete" asp-route-group_id="@group.group_id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@if(Model.Students != null)
+{
+    <hr />
+    <h3>Students from @Model.Groups.First(g => g.group_id == (int)ViewData["groupID"]).group_name</h3>
+    <hr />
+    <h2>Students</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(m => m.Students.FirstOrDefault().FullName)</th>
+                <th>@Html.DisplayNameFor(m => m.Students.FirstOrDefault().birth_date)</th>
+                <th>@Html.DisplayNameFor(m => m.Students.FirstOrDefault().email)</th>
+                <th>@Html.DisplayNameFor(m => m.Students.FirstOrDefault().phone)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(Student student in Model.Students!)
+            {
+                <tr>
+                    <td>@student.FullName</td>
+                    <td>@student.birth_date</td>
+                    <td>@student.email</td>
+                    <td>@student.phone</td>
+                    <td>
+                        <a asp-controller="Students" asp-action="Edit" asp-route-stud_id="@student.stud_id">Edit</a> |
+                        <a asp-controller="Students" asp-action="Details" asp-route-stud_id="@student.stud_id">Details</a> |
+                        <a asp-controller="Students" asp-action="Delete" asp-route-stud_id="@student.stud_id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Academy.Models;
+using Academy.Views.ViewModel;
 
 public class DirectionsController : Controller
 {
@@ -13,9 +14,32 @@ public class DirectionsController : Controller
     }
 
     // GET: DIRECTIONS
-    public async Task<IActionResult> Index()    
+    //public async Task<IActionResult> Index()    
+    //{
+    //    return View(await _context.Directions.ToListAsync());
+    //}
+    public async Task<IActionResult> Index(int? id , int? groupID)
     {
-        return View(await _context.Directions.ToListAsync());
+        ViewData["id"] = null;
+        ViewData["groupID"] = null;
+        DirectionsIndexData viewModel = new DirectionsIndexData();
+        viewModel.Directions = await _context.Directions.ToListAsync();
+        if (id.HasValue) 
+        {
+            ViewData["id"] = id.Value;
+            viewModel.Groups = await _context.Groups
+                .Where(g => g.direction == id.Value)
+                .ToListAsync();
+        }
+        if (groupID.HasValue) 
+        {
+            ViewData["groupID"] = groupID.Value;
+            viewModel.Students = await _context.Students
+                .Include(s => s.Group)
+                .Where(s => s.group == groupID.Value)
+                .ToListAsync();
+        }
+        return View(viewModel);
     }
 
     // GET: DIRECTIONS/Details/5
