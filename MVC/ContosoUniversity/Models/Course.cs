@@ -14,9 +14,9 @@ namespace ContosoUniversity.Models
         public int DepartmentID {  get; set; }
 
         //Nagigation properties:
-        public ICollection<Enrollment> Enrollments { get; set; }
-        public Department Department { get; set; }
-        public ICollection<CourseAssigment> CourseAssignments { get; set; }
-        public List<Instructor> Instructors { get; set; } = default!;
+        public ICollection<Enrollment>? Enrollments { get; set; }
+        public Department? Department { get; set; }
+        public ICollection<CourseAssigment>? CourseAssignments { get; set; }
+        public List<Instructor>? Instructors { get; set; } = default!;
     }
 }

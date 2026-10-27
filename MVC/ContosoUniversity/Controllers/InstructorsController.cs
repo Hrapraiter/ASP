@@ -1,8 +1,8 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
 using ContosoUniversity.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class InstructorsController : Controller
 {
@@ -203,4 +203,5 @@ public class InstructorsController : Controller
     {
         return _context.Instructors.Any(e => e.ID == id);
     }
+    
 }
