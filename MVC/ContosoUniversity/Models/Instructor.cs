@@ -28,8 +28,8 @@ namespace ContosoUniversity.Models
         public string FullName { get => $"{LastName} {FirstName}"; }
 
         //Navigation properties:
-        public OfficeAssigment OfficeAssigment { get; set; }
-        public ICollection<CourseAssigment> CourseAssigments { get; set; } 
+        public OfficeAssigment? OfficeAssigment { get; set; }
+        public ICollection<CourseAssigment>? CourseAssigments { get; set; } 
 
     }
 }

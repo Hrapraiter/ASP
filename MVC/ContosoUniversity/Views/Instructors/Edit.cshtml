@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="EditPost">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
@@ -27,6 +27,11 @@
                 <label asp-for="HireDate" class="control-label"></label>
                 <input asp-for="HireDate" class="form-control" />
                 <span asp-validation-for="HireDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OfficeAssigment.Location" class="control-label"></label>
+                <input asp-for="OfficeAssigment.Location" class="form-control" />
+                <span asp-validation-for="OfficeAssigment.Location" class="text-danger"></span>
             </div>
             @* <div class="form-group">
                 <label asp-for="FullName" class="control-label"></label>

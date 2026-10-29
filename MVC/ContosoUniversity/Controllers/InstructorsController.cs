@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
 using ContosoUniversity.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 public class InstructorsController : Controller
 {
@@ -123,7 +124,10 @@ public class InstructorsController : Controller
             return NotFound();
         }
 
-        var instructor = await _context.Instructors.FindAsync(id);
+        Instructor instructor = await _context.Instructors
+            .Include(i => i.OfficeAssigment)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(i => i.ID == id);
         if (instructor == null)
         {
             return NotFound();
@@ -136,7 +140,34 @@ public class InstructorsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id, [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)
+    public async Task<IActionResult> EditPost(int? id) 
+    {
+        if (id == null) return NotFound();
+        Instructor instructor = await _context.Instructors
+            .Include(i => i.OfficeAssigment)
+            .FirstOrDefaultAsync(i => i.ID == id);
+
+        bool ok = await TryUpdateModelAsync<Instructor>
+        (
+            instructor,
+            "",
+            i => i.FirstName,
+            i => i.LastName,
+            i => i.HireDate,
+            i => i.OfficeAssigment
+        );
+        if (ok) 
+        {
+            if (String.IsNullOrWhiteSpace(instructor.OfficeAssigment?.Location))
+                instructor.OfficeAssigment = null;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+            
+        }
+        return View(nameof(Edit), instructor);
+
+    }
+    /*public async Task<IActionResult> Edit(int? id, [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)
     {
         if (id != instructor.ID)
         {
@@ -164,7 +195,7 @@ public class InstructorsController : Controller
             return RedirectToAction(nameof(Index));
         }
         return View(instructor);
-    }
+    }*/
 
     // GET: INSTRUCTORS/Delete/5
     public async Task<IActionResult> Delete(int? id)
