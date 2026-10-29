@@ -126,12 +126,15 @@ public class InstructorsController : Controller
 
         Instructor instructor = await _context.Instructors
             .Include(i => i.OfficeAssigment)
+            .Include(i => i.CourseAssigments)
+            .ThenInclude(ca => ca.Course)
             .AsNoTracking()
             .FirstOrDefaultAsync(i => i.ID == id);
         if (instructor == null)
         {
             return NotFound();
         }
+        PopulateAssignedCourseData(instructor);
         return View(instructor);
     }
 
@@ -140,11 +143,18 @@ public class InstructorsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? id , [Bind("ID,LastName,FirstName,HireDate,FullName,OfficeAssigment")] Instructor instructor) 
+    public async Task<IActionResult> Edit
+    (   
+        int? id ,
+        [Bind("ID,LastName,FirstName,HireDate,FullName,OfficeAssigment")] Instructor instructor,
+        string[] selectedCourses
+    ) 
     {
         if (id == null) return NotFound();
         instructor = await _context.Instructors
             .Include(i => i.OfficeAssigment)
+            .Include(i => i.CourseAssigments)
+                .ThenInclude(ca => ca.Course)
             .FirstOrDefaultAsync(i => i.ID == id);
 
         bool ok = await TryUpdateModelAsync<Instructor>
@@ -160,10 +170,74 @@ public class InstructorsController : Controller
         {
             if (String.IsNullOrWhiteSpace(instructor.OfficeAssigment?.Location))
                 instructor.OfficeAssigment = null;
+            UpdateInstructorCourses(selectedCourses , instructor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        UpdateInstructorCourses(selectedCourses, instructor);
+        PopulateAssignedCourseData(instructor);
         return View(instructor);
+
+    }
+    void PopulateAssignedCourseData(Instructor instructor) 
+    {
+        IQueryable<Course> Courses = _context.Courses;
+        HashSet<int> instructorCourses = new HashSet<int>
+        (
+            instructor.CourseAssigments.Select(ca => ca.CourseID)
+        );
+        List<AssignedCourseData> viewModel = new List<AssignedCourseData>();
+        foreach (Course course in Courses)
+        {
+            viewModel.Add
+            (
+                new AssignedCourseData
+                {
+                    CourseID = course.CourseID,
+                    Title = course.Title,
+                    Assigned = instructorCourses.Contains(course.CourseID)
+                }
+            );
+            ViewData["Courses"] = viewModel;
+        }
+
+    }
+    void UpdateInstructorCourses(string[] selectedCourses, Instructor instructor) 
+    {
+        //if(selectedCourses == null) 
+        //{
+        //    instructor.CourseAssigments = null;
+        //    return;
+        //}
+        HashSet<string> selectedCoursesHS = new HashSet<string>(selectedCourses);
+        HashSet<int> instructorsCourses = new HashSet<int>
+        (
+            instructor.CourseAssigments.Select(ca => ca.CourseID)
+        );
+        foreach(Course course in _context.Courses) 
+        {
+            if (selectedCoursesHS.Contains(course.CourseID.ToString())) 
+            {
+                if (!instructorsCourses.Contains(course.CourseID))
+                    instructor.CourseAssigments.Add
+                    (
+                        new CourseAssigment
+                        {
+                            InstructorID = instructor.ID,
+                            CourseID = course.CourseID
+                        }
+                    );
+                else if (instructorsCourses.Contains(course.CourseID)) 
+                {
+                    CourseAssigment courseToRemove = instructor
+                        .CourseAssigments
+                        .FirstOrDefault(ca => ca.CourseID == course.CourseID);
+                    _context.Remove(courseToRemove);
+                }
+
+            }
+        }
+
 
     }
     /*public async Task<IActionResult> Edit(int? id, [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)
