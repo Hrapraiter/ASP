@@ -140,10 +140,10 @@ public class InstructorsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditPost(int? id) 
+    public async Task<IActionResult> Edit(int? id , [Bind("ID,LastName,FirstName,HireDate,FullName,OfficeAssigment")] Instructor instructor) 
     {
         if (id == null) return NotFound();
-        Instructor instructor = await _context.Instructors
+        instructor = await _context.Instructors
             .Include(i => i.OfficeAssigment)
             .FirstOrDefaultAsync(i => i.ID == id);
 
@@ -162,9 +162,8 @@ public class InstructorsController : Controller
                 instructor.OfficeAssigment = null;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            
         }
-        return View(nameof(Edit), instructor);
+        return View(instructor);
 
     }
     /*public async Task<IActionResult> Edit(int? id, [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)

@@ -12,7 +12,7 @@ namespace ContosoUniversity.Models
         public string Location { get; set; }
 
         //Navigation properties:
-        public Instructor Instructor { get; set; }
+        public Instructor? Instructor { get; set; }
 
     }
 }
