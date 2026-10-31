@@ -97,6 +97,9 @@ public class InstructorsController : Controller
     // GET: INSTRUCTORS/Create
     public IActionResult Create()
     {
+        Instructor instructor = new Instructor();
+        instructor.CourseAssigments = new List<CourseAssigment>();
+        PopulateAssignedCourseData(instructor);
         return View();
     }
 
@@ -105,8 +108,14 @@ public class InstructorsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)
+    public async Task<IActionResult> Create
+    (
+        [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor,
+        string[] selectedCourses
+    )
     {
+        if(selectedCourses != null)UpdateInstructorCourses(selectedCourses, instructor);
+        
         if (ModelState.IsValid)
         {
             _context.Add(instructor);
@@ -198,8 +207,8 @@ public class InstructorsController : Controller
                     Assigned = instructorCourses.Contains(course.CourseID)
                 }
             );
-            ViewData["Courses"] = viewModel;
         }
+        ViewData["Courses"] = viewModel;
 
     }
     void UpdateInstructorCourses(string[] selectedCourses, Instructor instructor) 
@@ -209,6 +218,31 @@ public class InstructorsController : Controller
         //    instructor.CourseAssigments = null;
         //    return;
         //}
+
+        /*
+        List<CourseAssigment> courseAssigments = new List<CourseAssigment>();
+        foreach (string selectedCourse in selectedCourses)
+        {
+            courseAssigments.Add
+            (
+                new CourseAssigment
+                {
+                    InstructorID = instructor.ID,
+                    CourseID = Convert.ToInt32(selectedCourse)
+                }
+            );
+        }
+        instructor.CourseAssigments = courseAssigments;
+        */
+        instructor.CourseAssigments = selectedCourses
+            .Select(sc => new CourseAssigment
+                {
+                    InstructorID = instructor.ID,
+                    CourseID = Convert.ToInt32(sc)
+                }
+            )
+            .ToList();
+        /*
         HashSet<string> selectedCoursesHS = new HashSet<string>(selectedCourses);
         HashSet<int> instructorsCourses = new HashSet<int>
         (
@@ -236,8 +270,7 @@ public class InstructorsController : Controller
                 _context.Remove(courseToRemove);
             }
         }
-
-
+        */
     }
     /*public async Task<IActionResult> Edit(int? id, [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor)
     {
@@ -269,7 +302,7 @@ public class InstructorsController : Controller
         return View(instructor);
     }*/
 
-    // GET: INSTRUCTORS/Delete/5
+        // GET: INSTRUCTORS/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)
