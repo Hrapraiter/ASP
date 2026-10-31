@@ -145,8 +145,8 @@ public class InstructorsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit
     (   
-        int? id ,
-        [Bind("ID,LastName,FirstName,HireDate,FullName,OfficeAssigment")] Instructor instructor,
+        int id,
+        [Bind("ID,LastName,FirstName,HireDate")] Instructor instructor,
         string[] selectedCourses
     ) 
     {
@@ -170,7 +170,7 @@ public class InstructorsController : Controller
         {
             if (String.IsNullOrWhiteSpace(instructor.OfficeAssigment?.Location))
                 instructor.OfficeAssigment = null;
-            UpdateInstructorCourses(selectedCourses , instructor);
+            UpdateInstructorCourses(selectedCourses, instructor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -227,14 +227,13 @@ public class InstructorsController : Controller
                             CourseID = course.CourseID
                         }
                     );
-                else if (instructorsCourses.Contains(course.CourseID)) 
-                {
-                    CourseAssigment courseToRemove = instructor
-                        .CourseAssigments
-                        .FirstOrDefault(ca => ca.CourseID == course.CourseID);
-                    _context.Remove(courseToRemove);
-                }
-
+            }
+            else if (instructorsCourses.Contains(course.CourseID)) 
+            {
+                CourseAssigment courseToRemove = instructor
+                    .CourseAssigments
+                    .FirstOrDefault(ca => ca.CourseID == course.CourseID);
+                _context.Remove(courseToRemove);
             }
         }
 

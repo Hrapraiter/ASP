@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="">
-        <form asp-action="Edit" style="display:flex;justify-content:space-between;">
+        <form asp-action="Edit" method="post" style="display:flex;justify-content:space-between;">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div>
@@ -34,6 +34,9 @@
                     <input asp-for="OfficeAssigment.Location" class="form-control" />
                     <span asp-validation-for="OfficeAssigment.Location" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
             </div>
             <div style="width:55%;">
                 <table style="width:100%;">
@@ -41,7 +44,7 @@
                         @{
                             int count = 0;
                             List<ContosoUniversity.Models.ViewModels.AssignedCourseData>
-                                courses = ViewBag.Courses;
+                            courses = ViewBag.Courses;
                             foreach (ContosoUniversity.Models.ViewModels.AssignedCourseData course in courses)
                                 {
                                     if (count++ % 3 == 0)
@@ -55,19 +58,17 @@
                                                id="@course.CourseID"
                                                @(course.Assigned ? "checked=\"checked\"" : "")
                                                />
-                                               <label for="@course.CourseID">
-                                                    @course.CourseID @course.Title
-                                               </label>
+                                        <label for="@course.CourseID">
+                                             @course.CourseID @course.Title
+                                        </label>
                                     @:</td>
                                 }
                             }
                     </tr>
                 </table>
             </div>    
+        
         </form>
-        <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-primary" />
-        </div>
     </div>
 </div>
 
